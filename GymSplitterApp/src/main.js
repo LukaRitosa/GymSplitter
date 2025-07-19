@@ -1,4 +1,5 @@
 import './assets/main.css'
+import './firebase.js'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -12,3 +13,6 @@ app.use(createPinia())
 app.use(router)
 
 app.mount('#app')
+
+
+

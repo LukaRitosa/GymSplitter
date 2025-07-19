@@ -1,22 +1,23 @@
 <script setup>
-
-
+ import { RouterView } from 'vue-router'
 </script>
 
 <template>
 
-  <div class="text-red-800">
-    aaaaa
-  </div>
 
-  <div class="flex justify-items-center">
-    <div class="text-yellow-600">bbbbbb</div>
-    <div class="text-blue-900">cccccc</div>
-  </div>
+    <RouterView />
+
 
 </template>
 
 <style scoped>
-
-
+        a.router-link-exact-active {
+        color: blue;
+    }
+    a {
+        color: black;
+        display: inline-block;
+        padding: 0 1rem;
+        border-left: 1px solid black;
+    }
 </style>
