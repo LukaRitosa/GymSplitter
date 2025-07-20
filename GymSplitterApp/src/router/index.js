@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Registracija from '../views/Registracija.vue'
 import Prijava from '../views/Prijava.vue'
 import Pocetna from '../views/Pocetna.vue'
+import Test from '../views/Test.vue'
 // import ChangePasswordView from '../views/ChangePasswordView.vue' 
 
 
@@ -23,11 +24,11 @@ const router = createRouter({
        name: 'Pocetna',
        component: Pocetna,
      },
-    // {
-    //   path: '/change-password',
-    //   name: 'ChangePassword',
-    //   component: ChangePasswordView
-    // },
+     {
+       path: '/test',
+       name: 'Test',
+       component: Test
+     },
   ],
 })
 

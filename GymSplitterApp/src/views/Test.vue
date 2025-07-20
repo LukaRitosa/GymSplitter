@@ -13,7 +13,13 @@
 
 <template>
 
+    <div>
+        Koliko slobodnog vremena u tjednu imaš?
+    </div>
 
+    <div>
+        Koliko iskustva u teretani imaš?
+    </div>
 
 
 </template>
