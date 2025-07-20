@@ -21,7 +21,7 @@
             poruka.value.error = false;
             poruka.value.message = 'Korisnik prijavljen: ' + JSON.stringify(userCredential.user)
 
-            router.push("/registracija")
+            router.push("/pocetna")
 
         } catch (error) {
             poruka.value.error = true
