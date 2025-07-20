@@ -4,6 +4,8 @@
     import { ref } from 'vue'
     import { createUserWithEmailAndPassword } from 'firebase/auth'
     import { auth } from '@/firebase.js'
+    import { setDoc, doc } from "firebase/firestore"
+    import { db } from "@/firebase.js"
     
     const username=ref("")    
     const email=ref("")    
@@ -29,6 +31,14 @@
                 email: userCredential.user.email,
                 uid: userCredential.user.uid
             })
+            
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+                username: username.value,
+                email: userCredential.user.email,
+                iskustvo: null,
+                slobodnoVrijeme: null,
+                trenutniSplit: null
+            })
 
             poruka.value = { error: false, message: 'Korisnik registriran!' }
             router.push('/')
@@ -36,6 +46,8 @@
             poruka.value = { error: true, message: 'Greška: ' + error.message }
         }
     }
+
+    
 
 
 </script>
@@ -88,7 +100,7 @@
                     <input type="text" class="border p-1 w-full" placeholder="Ponovi lozinku..." v-model="password2">
                 </div>
 
-                <button class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2" type="submit">Registracija</button>
+                <button class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold" type="submit">Registracija</button>
 
                 <div v-if="poruka.message" :class="poruka.error ? 'text-red-500' : 'text-green-600'">{{ poruka.message }}</div>
             

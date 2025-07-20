@@ -68,7 +68,7 @@
                 <input type="text" class="border p-1 w-full" placeholder="Lozinka..." v-model="password">
             </div>
 
-            <button class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2" type="submit">Registracija</button>
+            <button class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold" type="submit">Registracija</button>
 
             <div v-if="poruka.message" :class="poruka.error ? 'text-red-500' : 'text-green-600'">{{ poruka.message }}</div>
 
