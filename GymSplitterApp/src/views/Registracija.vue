@@ -15,14 +15,15 @@
 
     const router=useRouter()
     const userStore=useUserStore()
+    const loading = ref(false)
     
     const registracija = async () => {
+        loading.value = true
         if(password.value!==password2.value){
             poruka.value.error = true
             poruka.value.message = 'Lozinke se ne podudaraju'
             return
         }
-
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value)
 
@@ -31,7 +32,7 @@
                 email: userCredential.user.email,
                 uid: userCredential.user.uid
             })
-            
+
             await setDoc(doc(db, "users", userCredential.user.uid), {
                 username: username.value,
                 email: userCredential.user.email,
@@ -44,6 +45,9 @@
             router.push('/')
         } catch (error) {
             poruka.value = { error: true, message: 'Greška: ' + error.message }
+        }
+        finally {
+            loading.value = false
         }
     }
 
@@ -70,7 +74,9 @@
                 <span class="px-4 py-2 font-semibold border-b-2 border-red-700 text-red-700">Registracija</span>
             </div>
             
-            <form @submit.prevent="registracija" class="space-y-4">
+            
+        
+            <form  @submit.prevent="registracija" class="space-y-4">
 
                 <div>
                     <div>
@@ -100,7 +106,12 @@
                     <input type="text" class="border p-1 w-full" placeholder="Ponovi lozinku..." v-model="password2">
                 </div>
 
-                <button class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold" type="submit">Registracija</button>
+                <button :disabled="loading" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold" type="submit">
+                    <span v-if="!loading">Registracija</span>
+                    <span v-else><img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="inline w-5 h-5" /></span>
+                </button>
+
+                
 
                 <div v-if="poruka.message" :class="poruka.error ? 'text-red-500' : 'text-green-600'">{{ poruka.message }}</div>
             

@@ -12,6 +12,16 @@
 
     const pitanja=[
         {
+            tekst:"Koliko iskustva treniranja u teretani imaš?",
+            odgovori: [
+                "Nikad nisam.",
+                "Manje od 3 mjeseca.",
+                "1-2 godine.",
+                "3-5 godina.",
+                "5+ godina.",        
+            ] 
+        },
+        {
             tekst:"Koliko slobodnog vremena u tjednu imaš?",
             odgovori: [
                 "1 dan",
@@ -22,16 +32,6 @@
                 "6-7 dana", 
             ]
         },
-        {
-            tekst:"Koliko iskustva treniranja u teretani imaš?",
-            odgovori: [
-                "Nikad nisam.",
-                "Manje od 3 mjeseca.",
-                "1-2 godine.",
-                "3-5 godina.",
-                "5+ godina.",        
-            ] 
-        }
     ]
 
     const posaljiOdgovore = async () => {

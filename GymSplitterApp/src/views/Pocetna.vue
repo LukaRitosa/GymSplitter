@@ -69,6 +69,10 @@
             </div>
         </div>
 
+        <div v-if="userPodaci && (userPodaci.slobodnoVrijeme && userPodaci.iskustvo)">
+            <RouterLink to="/test" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Promjeni podatke</RouterLink>
+        </div>
+
 
 
 
