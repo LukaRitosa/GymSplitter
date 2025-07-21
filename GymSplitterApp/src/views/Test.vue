@@ -3,6 +3,7 @@
     import { useUserStore } from '@/stores/userStore'
     import { ref } from 'vue'
     import { updateDoc, doc } from "firebase/firestore"
+    import { db } from '@/firebase' 
 
 
 
@@ -13,70 +14,45 @@
         {
             tekst:"Koliko slobodnog vremena u tjednu imaš?",
             odgovori: [
-                {
-                    izbor: "1 dan",
-                    vrijednost: 0 
-                },
-                {
-                    
-                    izbor: "2 dana",
-                    vrijednost: 1
-                },
-                {
-                    izbor: "3 dana",
-                    vrijednost: 2
-                },
-                {
-                    izbor: "4 dana",
-                    vrijednost: 3
-                }, 
-                {
-                    izbor: "5 dana",
-                    vrijednost: 4
-                },
-                {
-                    izbor: "6-7 dana",
-                    vrijednost: 5
-                }
+                "1 dan",
+                "2 dana",
+                "3 dana",
+                "4 dana",
+                "5 dana",
+                "6-7 dana", 
             ]
         },
         {
             tekst:"Koliko iskustva treniranja u teretani imaš?",
             odgovori: [
-                {
-                    izbor: "Nikad nisam.",
-                    vrijednost: 0 
-                },
-                {
-                    
-                    izbor: "Manje od 3 mjeseca.",
-                    vrijednost: 1
-                },
-                {
-                    izbor: "Manje od godinu dana.",
-                    vrijednost: 2
-                },
-                {
-                    izbor: "1-2 godine.",
-                    vrijednost: 3
-                }, 
-                {
-                    izbor: "3-5 godina.",
-                    vrijednost: 4
-                },
-                {
-                    izbor: "5+ godina.",
-                    vrijednost: 5
-                }
-            ]
+                "Nikad nisam.",
+                "Manje od 3 mjeseca.",
+                "1-2 godine.",
+                "3-5 godina.",
+                "5+ godina.",        
+            ] 
         }
     ]
 
+    const posaljiOdgovore = async () => {
+        const user= userStore.currentUser
 
-    await updateDoc(doc(db, "users", userCredential.user.uid), {
-        iskustvo: odgovori.value[0],
-        slobodnoVrijeme: odgovori.value[1]
-    })
+        try{
+            await updateDoc(doc(db, "users", user.uid), {
+                iskustvo: odgovori.value[0],
+                slobodnoVrijeme: odgovori.value[1]
+            })
+            router.push("/pocetna")
+        }
+        catch (error) {
+            console.error("Greška pri spremanju:", error)
+            alert("Došlo je do greške.")
+        }
+    }
+
+
+
+    
 
 
     const odgovori = ref(Array(pitanja.length).fill(null))
@@ -91,18 +67,22 @@
             {{ pitanje.tekst }}
         </b>
 
-        <div v-for="(o, i) in pitanje.odgovori">
-            <input type="radio" v-model="odgovori[index]" :value="o.vrijednost" :name="'pitanje'+ index"/>
-            {{ o.izbor }}
+        <div v-for="(o) in pitanje.odgovori">
+            <input type="radio" v-model="odgovori[index]" :value="o" :name="'pitanje'+ index"/>
+            {{ o }}
         </div>
     </div>
 
 
-    <div>
-        {{ odgovori[0] }}
-    </div>
 
-    
+
+    <button class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold" @click="posaljiOdgovore">
+        Pošalji odgovor
+    </button>
+
+
+
+
 
 
 </template>
