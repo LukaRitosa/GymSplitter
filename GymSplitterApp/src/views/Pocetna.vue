@@ -61,15 +61,16 @@
             </div>
         </div>
 
-        <div v-if="userPodaci && (!userPodaci.slobodnoVrijeme || !userPodaci.iskustvo)">
-        
-            Preporučamo da riješiš naš test za procjenu tvog iskustva  i vremena na raspolaganju!
+        <div v-if="userPodaci && (!userPodaci.slobodnoVrijeme || !userPodaci.iskustvo)" class="flex flex-col items-center justify-center ">
+            <div>
+                Preporučamo da riješiš naš test za procjenu tvog iskustva  i vremena na raspolaganju!             
+            </div>
             <div>
                 <RouterLink to="/test" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Test</RouterLink>
             </div>
         </div>
 
-        <div v-if="userPodaci && (userPodaci.slobodnoVrijeme && userPodaci.iskustvo)">
+        <div v-else>
             <RouterLink to="/test" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Promjeni podatke</RouterLink>
         </div>
 
