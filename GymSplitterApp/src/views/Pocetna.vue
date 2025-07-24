@@ -83,12 +83,10 @@
         </div>
 
         <div >
-            <RouterLink to="/vjezbe" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Vježbe</RouterLink>
+            <RouterLink to="/vjezbe" class="w-full bg-green-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Vježbe</RouterLink>
         </div>
 
-        <div >
-            <RouterLink to="/admin" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Vježbe</RouterLink>
-        </div>
+
 
 
 
