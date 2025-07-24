@@ -8,8 +8,13 @@
 
 
     const userPodaci = ref(null)
+    const loading = ref(null)
+    
 
     onMounted(async () => {
+        
+    loading.value=true
+
     if (currentUser && currentUser.uid) {
         const docRef = doc(db, "users", currentUser.uid)
         const docSnap = await getDoc(docRef)
@@ -18,6 +23,9 @@
             userPodaci.value = docSnap.data()
         }
     }
+
+
+    loading.value=false
     })
 
 
@@ -40,7 +48,7 @@
 
 <template>
     
-    <div class="flex flex-col items-center justify-center h-screen bg-red-50 text-red-950 gap-6 p-6">
+    <div v-if="!loading" class="flex flex-col items-center justify-center h-screen bg-red-50 text-red-950 gap-6 p-6">
         
         
         <div v-if="userPodaci" class="text-xl space-y-2">
@@ -74,6 +82,15 @@
             <RouterLink to="/test" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Promjeni podatke</RouterLink>
         </div>
 
+        <div >
+            <RouterLink to="/vjezbe" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Vježbe</RouterLink>
+        </div>
+
+        <div >
+            <RouterLink to="/admin" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Vježbe</RouterLink>
+        </div>
+
+
 
 
 
@@ -83,6 +100,10 @@
         
         <div class="text-red-500">{{ poruka }}</div>
 
+    </div>
+
+    <div v-else>
+        <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="h-full" />
     </div>
 
 </template>
