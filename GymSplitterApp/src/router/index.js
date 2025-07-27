@@ -7,6 +7,7 @@ import Vjezbe from '../views/Vjezbe.vue'
 import adminPrijava from '../views/AdminPrijava.vue'
 import Admin from '../views/Admin.vue'
 import VjezbaMarer from '../views/VjezbaMaker.vue'
+import SplitMaker from '../views/SplitMaker.vue'
 // import ChangePasswordView from '../views/ChangePasswordView.vue' 
 
 
@@ -61,6 +62,20 @@ const router = createRouter({
       path: '/vjezbaMaker',
       name: 'VjezbaMaker',
       component: VjezbaMarer,
+      beforeEnter: (to, from, next) => {
+      const isAdmin = localStorage.getItem('admin') === 'true'
+
+      if (isAdmin) {
+        next() 
+      } else {
+        next('/adminPrijava')
+      }
+      }
+    },
+    {
+      path: '/splitMaker',
+      name: 'SplitMaker',
+      component: SplitMaker,
       beforeEnter: (to, from, next) => {
       const isAdmin = localStorage.getItem('admin') === 'true'
 
