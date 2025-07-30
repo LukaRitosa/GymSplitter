@@ -98,9 +98,9 @@
 
         </div>
 
-        <button :disabled="loading" @click="spremiSplit" class="bg-blue-600 hover:bg-blue-400 text-white px-4 py-2 rounded mt-2">
+        <button :disabled="loading" @click="stvoriSplit" class="bg-blue-600 hover:bg-blue-400 text-white px-4 py-2 rounded mt-2">
             <span v-if="!loading">Spremi Split</span>
-            <span v-else>Spremanje...</span>
+            <span v-else><img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="inline w-5 h-5" /></span>
         </button>
         
         <div v-if="poruka" class="mt-2 text-green-700">{{ poruka }}</div>
