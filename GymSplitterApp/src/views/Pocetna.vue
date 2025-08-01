@@ -86,10 +86,13 @@
             <RouterLink to="/vjezbe" class="w-full bg-green-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Vježbe</RouterLink>
         </div>
 
+        <div >
+            <RouterLink to="/SplitBiranje" class="w-full bg-green-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Izaberi Split</RouterLink>
+        </div>
 
-
-
-
+        <div >
+            <RouterLink to="/Split" class="w-full bg-green-800 text-white rounded hover:bg-red-600 p-2 font-semibold"> Split</RouterLink>
+        </div>
 
 
         <form @submit.prevent="logout">

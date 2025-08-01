@@ -8,6 +8,9 @@ import adminPrijava from '../views/AdminPrijava.vue'
 import Admin from '../views/Admin.vue'
 import VjezbaMarer from '../views/VjezbaMaker.vue'
 import SplitMaker from '../views/SplitMaker.vue'
+import SplitBiranje from '../views/SplitBiranje.vue'
+import Split from '../views/Split.vue'
+import UserSplitovi from '../views/UserSplitovi.vue'
 // import ChangePasswordView from '../views/ChangePasswordView.vue' 
 
 
@@ -86,6 +89,21 @@ const router = createRouter({
       }
       }
     },
+    {
+       path: '/SplitBiranje',
+       name: 'SplitBiranje',
+       component: SplitBiranje,
+     },
+    {
+       path: '/Split',
+       name: 'Split',
+       component: Split,
+     },
+    {
+       path: '/UserSplitovi',
+       name: 'UserSplitovi',
+       component: UserSplitovi,
+     },
   ],
 })
 
