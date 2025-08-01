@@ -12,28 +12,28 @@
 
     const dohvatiTrenutniSplit = async () => {
 
-    const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
-    const userDocSnap = await getDoc(userDocRef)
+        const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
+        const userDocSnap = await getDoc(userDocRef)
 
-    if (userDocSnap.exists()) {
-        const data = userDocSnap.data()
-        trenutniSplit.value = data.trenutniSplit
-        console.log("trenutniSplit:", trenutniSplit.value)
-    } else {
-        console.warn("User dokument ne postoji.")
-    }
+        if (userDocSnap.exists()) {
+            const data = userDocSnap.data()
+            trenutniSplit.value = data.trenutniSplit
+            console.log("trenutniSplit:", trenutniSplit.value)
+        } else {
+            console.warn("User dokument ne postoji.")
+        }
     }
 
 
     const dohvatiSplit = async () => {
-    if (!userStore.currentUser || !trenutniSplit.value) return
+        if (!userStore.currentUser || !trenutniSplit.value) return
 
-    const splitRef = doc(db, `users/${userStore.currentUser.uid}/splits/${trenutniSplit.value}`)
-    const splitSnap = await getDoc(splitRef)
+        const splitRef = doc(db, `users/${userStore.currentUser.uid}/splits/${trenutniSplit.value}`)
+        const splitSnap = await getDoc(splitRef)
 
-    if (splitSnap.exists()) {
-        splitPodaci.value = splitSnap.data()
-    }
+        if (splitSnap.exists()) {
+            splitPodaci.value = splitSnap.data()
+        }
     }
 
     onMounted(async () => {
