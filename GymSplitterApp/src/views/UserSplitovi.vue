@@ -1,36 +1,71 @@
 <script setup>
     import { RouterLink, useRouter } from 'vue-router'
     import { ref, onMounted } from 'vue'
-    import { collection, getDocs, doc, setDoc } from 'firebase/firestore'
+    import { collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore'
     import { useUserStore } from '@/stores/userStore'
     import { db } from '@/firebase'
 
     const userStore = useUserStore()
+    const userPodaci = ref(null)
     const splits=ref([])
+    const loading = ref(false)
 
     const dohvatiUserSplitove= async() =>{
+        loading.value=true
         if (!userStore.currentUser) return
 
-        const userSplitsRef = doc(db, `users/${userStore.currentUser.uid}/splits`)
+        const userSplitsRef = collection(db, `users/${userStore.currentUser.uid}/splits`)
         const snapshot= await getDocs(userSplitsRef)
 
         splits.value=snapshot.docs.map(doc => ({
             id: doc.id, ...doc.data()
         }))
+        loading.value=false
     }
+    
+ const getUser= async () => {
+    if (userStore.currentUser?.uid) {
+        const docSnap = await getDoc(doc(db, 'users', userStore.currentUser.uid))
+        if (docSnap.exists()) {
+            userPodaci.value = docSnap.data()
+        }
+    }
+}
 
-    onMounted( () =>{
-        dohvatiUserSplitove()
+
+    onMounted(async () => {
+        await dohvatiUserSplitove()
+        await getUser()
     })
 
+
+    console.log(userStore.currentUser.trenutniSplit)
 </script>
 
 <template>
 
-    <RouterLink to="/SplitBiranje" class="border bg-red-800 text-white">
-        +
+    <div v-if="!loading">
+        <div>
+            <RouterLink to="/SplitBiranje" class="border bg-red-800 text-white">
+                +
+            </RouterLink>
+
+            <div v-for="split in splits" :key="split.id" :class="['p-4 m-2 rounded border', 
+                userPodaci?.trenutniSplit === split.id
+                    ? 'border-red-300 bg-red-800 text-white'                                     
+                    : 'border-gray-300 bg-gray-300']">
+                {{ split.naziv }}
+                {{ split.broj_dana }}
+            </div>
+        </div>
+    </div>
+
+    <div v-else>
+        <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="h-full" />
+    </div>
+    
+    <RouterLink to="/pocetna" class="border bg-red-800 text-white">
+        pocetna
     </RouterLink>
-
-
     
 </template>

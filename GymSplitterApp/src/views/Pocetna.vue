@@ -13,19 +13,19 @@
 
     onMounted(async () => {
         
-    loading.value=true
+        loading.value=true
 
-    if (currentUser && currentUser.uid) {
-        const docRef = doc(db, "users", currentUser.uid)
-        const docSnap = await getDoc(docRef)
+        if (currentUser && currentUser.uid) {
+            const docRef = doc(db, "users", currentUser.uid)
+            const docSnap = await getDoc(docRef)
 
-        if (docSnap.exists()) {
-            userPodaci.value = docSnap.data()
+            if (docSnap.exists()) {
+                userPodaci.value = docSnap.data()
+            }
         }
-    }
 
 
-    loading.value=false
+        loading.value=false
     })
 
 
