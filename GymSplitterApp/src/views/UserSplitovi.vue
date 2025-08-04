@@ -1,7 +1,7 @@
 <script setup>
     import { RouterLink, useRouter } from 'vue-router'
     import { ref, onMounted } from 'vue'
-    import { collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore'
+    import { collection, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore'
     import { useUserStore } from '@/stores/userStore'
     import { db } from '@/firebase'
 
@@ -9,6 +9,7 @@
     const userPodaci = ref(null)
     const splits=ref([])
     const loading = ref(false)
+    const router=useRouter()
 
     const dohvatiUserSplitove= async() =>{
         loading.value=true
@@ -23,15 +24,30 @@
         loading.value=false
     }
     
- const getUser= async () => {
-    if (userStore.currentUser?.uid) {
-        const docSnap = await getDoc(doc(db, 'users', userStore.currentUser.uid))
-        if (docSnap.exists()) {
-            userPodaci.value = docSnap.data()
+    const getUser= async () => {
+        if (userStore.currentUser?.uid) {
+            const docSnap = await getDoc(doc(db, 'users', userStore.currentUser.uid))
+            if (docSnap.exists()) {
+                userPodaci.value = docSnap.data()
+            }
         }
     }
-}
 
+    const odaberiSplit= async (splitId) =>{
+        if (!userStore.currentUser?.uid) return
+
+        try {
+            const userRef = doc(db, 'users', userStore.currentUser.uid)
+            await updateDoc(userRef, {
+            trenutniSplit: splitId
+            })
+
+            userPodaci.value.trenutniSplit = splitId
+            router.push('/pocetna')
+        } catch (error) {
+            console.error("Greška pri postavljanju trenutnog splita:", error)
+        }
+    }
 
     onMounted(async () => {
         await dohvatiUserSplitove()
@@ -39,7 +55,6 @@
     })
 
 
-    console.log(userStore.currentUser.trenutniSplit)
 </script>
 
 <template>
@@ -50,7 +65,8 @@
                 +
             </RouterLink>
 
-            <div v-for="split in splits" :key="split.id" :class="['p-4 m-2 rounded border', 
+            <div v-for="split in splits" :key="split.id" @click="odaberiSplit(split.id)"
+                :class="['p-4 m-2 rounded border', 
                 userPodaci?.trenutniSplit === split.id
                     ? 'border-red-300 bg-red-800 text-white'                                     
                     : 'border-gray-300 bg-gray-300']">
