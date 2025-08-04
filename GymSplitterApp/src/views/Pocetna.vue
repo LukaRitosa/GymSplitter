@@ -87,7 +87,7 @@
         </div>
 
         <div >
-            <RouterLink to="/SplitBiranje" class="w-full bg-green-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Izaberi Split</RouterLink>
+            <RouterLink to="/UserSplitovi" class="w-full bg-green-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Izaberi Split</RouterLink>
         </div>
 
         <div >

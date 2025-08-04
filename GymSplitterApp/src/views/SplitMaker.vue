@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, watch } from 'vue'
+    import { ref, watch, computed } from 'vue'
     import { db } from '@/firebase'
     import { collection, getDocs, addDoc } from 'firebase/firestore';
 
@@ -15,11 +15,24 @@
         const querySnapshot= await getDocs(collection(db, 'vjezbe'))
         vjezbe.value=querySnapshot.docs.map(doc => ({
             id: doc.id,
-            naziv: doc.data().naziv
+            naziv: doc.data().naziv,
+            glavni_misic: doc.data().glavni_misic
         }))
     }
 
+    const grupiraneVjezbe = computed(() => {
+        const grupe = {}
+        for (const v of vjezbe.value) {
+            if (!grupe[v.glavni_misic]) {
+                grupe[v.glavni_misic] = []
+            }
+            grupe[v.glavni_misic].push(v)
+        }
+        return grupe
+    })
+
     dohvatiVjezbe()
+
 
     const updateDani = () => {
     dani.value = Array.from({ length: broj_dana.value }, (_, i) => ({
@@ -84,15 +97,14 @@
             <input v-model="dan.naziv" class="border p-1 w-full mb-2" type="text" placeholder="npr. Push" />
             
             <label class="block mb-1">Odaberi vježbe:</label>
-            <div class="flex flex-wrap gap-2">
-                <label v-for="v in vjezbe" :key="v.id">
-                    <input
-                        type="checkbox"
-                        :value="v.id"
-                        v-model="dan.vjezbe"
-                    />
-                    {{ v.naziv }}
-                </label>
+            <div v-for="(grupa, misic) in grupiraneVjezbe" :key="misic">
+                <div class="flex flex-wrap gap-2">
+                    <h4 class="font-semibold mb-1">{{ misic }}</h4>
+                    <label v-for="v in grupa" :key="v.id" class="inline-flex items-center gap-1">
+                        <input type="checkbox" :value="v.id" v-model="dan.vjezbe"/>
+                        {{ v.naziv }}
+                    </label>
+                </div>
             </div>
 
 
