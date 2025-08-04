@@ -8,6 +8,7 @@
     const userStore = useUserStore()
     const trenutniSplit = ref(null)
     const splitPodaci = ref(null)
+    const router=useRouter()
 
 
     const dohvatiTrenutniSplit = async () => {
@@ -55,7 +56,8 @@
     <p>Broj dana: {{ splitPodaci.broj_dana }}</p>
 
     <ul class="mt-2 list-disc pl-5 text-sm text-gray-700">
-        <li v-for="dan in splitPodaci.dani" :key="dan.dan">
+        <li v-for="dan in splitPodaci.dani" :key="dan.dan" class="cursor-pointer hover:text-red-600"
+        @click="router.push(`/UrediDan/${dan.dan}`)">
             Dan {{ dan.dan }}  {{ dan.naziv }} ({{ dan.vjezbe.length }} vježba)
         </li>
     </ul>

@@ -11,6 +11,7 @@ import SplitMaker from '../views/SplitMaker.vue'
 import SplitBiranje from '../views/SplitBiranje.vue'
 import Split from '../views/Split.vue'
 import UserSplitovi from '../views/UserSplitovi.vue'
+import UrediDan from '@/views/UrediDan.vue'
 // import ChangePasswordView from '../views/ChangePasswordView.vue' 
 
 
@@ -104,6 +105,12 @@ const router = createRouter({
        name: 'UserSplitovi',
        component: UserSplitovi,
      },
+    {
+      path: '/UrediDan/:danId',
+      name: 'UrediDan',
+      component: UrediDan,
+      props: true
+    },
   ],
 })
 

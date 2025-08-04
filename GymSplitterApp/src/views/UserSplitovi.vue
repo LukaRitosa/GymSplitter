@@ -39,11 +39,11 @@
         try {
             const userRef = doc(db, 'users', userStore.currentUser.uid)
             await updateDoc(userRef, {
-            trenutniSplit: splitId
+                trenutniSplit: splitId
             })
 
             userPodaci.value.trenutniSplit = splitId
-            router.push('/pocetna')
+            router.push('/Split')
         } catch (error) {
             console.error("Greška pri postavljanju trenutnog splita:", error)
         }
