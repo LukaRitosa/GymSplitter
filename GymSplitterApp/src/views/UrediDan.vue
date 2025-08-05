@@ -3,11 +3,12 @@
     import { doc, getDoc} from 'firebase/firestore'
     import { db } from '@/firebase'
     import { useUserStore } from '@/stores/userStore'
-    import { useRouter } from 'vue-router'
+    import { useRoute } from 'vue-router'
 
-    const router= useRouter()
+    const route= useRoute()
     const userStore=useUserStore()
 
+    const danId = Number(route.params.danId)
     const trenutniSplitId=ref(null)
     const danPodatci=ref(null)
     const vjezbe=ref([])
@@ -19,7 +20,7 @@
         const userDocRef=doc(db, `users/${userStore.currentUser.uid}`)
         const userSnap = await getDoc(userDocRef)
         if(userSnap.exists()){
-            trenutniSplitId.value=userSnap.data.trenutniSplit
+            trenutniSplitId.value=userSnap.data().trenutniSplit
         }
     }
 
@@ -27,7 +28,7 @@
         const splitRef= doc(db, `users/${userStore.currentUser.uid}/splits/${trenutniSplitId.value}`)
         const splitSnap= await getDoc(splitRef)
         if(splitSnap.exists()){
-            const dan = splitSnap.data().dani[id]
+            const dan = splitSnap.data()
             danPodatci.value=dan
             await dohvatiVjezbe(dan.vjezbe)
         }
@@ -42,8 +43,10 @@
                 rez.push({
                     id,
                     naziv: vjezbaSnap.data().naziv,
-                    opis: vjezbaSnap.data().opis,
-                    slika: vjezbaSnap.data().slika
+                    opis: vjezbaSnap.data().Opis,
+                    slika: vjezbaSnap.data().slika,
+                    glavni_misic:vjezbaSnap.data().glavni_misic,
+                    
                 })
             }
         }
@@ -60,6 +63,14 @@
 
 <template>
     <div v-if="!loading">
-        dan
+        <h2>{{ danPodaci.naziv }}</h2>
+        <li v-for="v in vjezbeDetalji" :key="v.id">
+            {{ v.naziv }}
+            <img :src="v.slika">
+        </li>
+    </div>
+
+    <div v-else>
+        <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="h-full" />
     </div>
 </template>
