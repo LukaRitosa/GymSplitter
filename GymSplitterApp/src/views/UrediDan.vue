@@ -99,16 +99,22 @@ onMounted(async () => {
                 Ostali mišići: {{ v.ostali_misici.join(', ') }}
             </p>
             <p class="mt-2 font-medium">
+                Broj setova: 
                 <button class="border bg-red-500 text-white hover:bg-red-300 p-2">
                     -
-                </button>
-                Broj setova: {{ v.brojSetova }}
+                </button>{{ v.brojSetova }}
                 <button class="border bg-red-500 text-white hover:bg-red-300 p-2">
                     +
                 </button>
             </p>
+            <button class="border bg-black text-white hover:bg-red-800 p-2">
+                ukloni vježbu
+            </button>
         </div>
       </li>
+      <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2">
+        dodaj vježbu
+      </button>
     </ul>
     <button v-if="promjena" class="border bg-red-500 text-white hover:bg-red-300 p-2">
         spremi promjene
