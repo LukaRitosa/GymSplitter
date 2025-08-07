@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, onMounted } from 'vue'
+    import { ref, onMounted, computed } from 'vue'
     import { doc, getDoc, updateDoc, getDocs } from 'firebase/firestore'
     import { db } from '@/firebase'
     import { useUserStore } from '@/stores/userStore'
@@ -192,7 +192,7 @@
                     </button>
                 </div>
             </li>
-            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2">
+            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2" @click="izbornik=true">
                 dodaj vježbu
             </button>
             </ul>
@@ -200,9 +200,17 @@
                 spremi promjene
             </button>
         </div>
-        <div v-else>
+        
+        <div v-else-if="loading">
             <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif"/>
         </div>
+
+        <div v-if="izbornik">
+            <div>
+                a
+            </div>
+        </div>
+
     </div>
   
  
