@@ -1,14 +1,24 @@
 <script setup>
     import { ref, onMounted, computed } from 'vue'
-    import { doc, getDoc, updateDoc, getDocs } from 'firebase/firestore'
+    import { doc, getDoc, updateDoc, getDocs, collection } from 'firebase/firestore'
     import { db } from '@/firebase'
     import { useUserStore } from '@/stores/userStore'
     import { useRoute } from 'vue-router'
+    
 
     const route = useRoute()
     const userStore = useUserStore()
 
-    const danId = Number(route.params.danId)
+    const props = defineProps({
+        danId: {
+            type: [Number, String],
+            required: false
+        }
+    })
+
+    const danId = Number(props.danId ?? route.params.danId)
+
+
     const trenutniSplitId = ref(null)
     const danPodaci = ref({})
     const vjezbe = ref([])
@@ -42,7 +52,7 @@
         if (splitSnap.exists()) {
         const splitData = splitSnap.data()
         
-        const odabraniDan = splitData.dani?.find(d => d.dan === danId)
+        const odabraniDan = splitData.dani?.find(d => Number(d.dan) === Number(danId))
         if (odabraniDan) {
             danPodaci.value = odabraniDan
             await dohvatiVjezbe(odabraniDan.vjezbe || [])
@@ -95,7 +105,7 @@
     const grupiraneVjezbe= computed (() =>{
         const grupe={}
         sveVježbe.value.forEach(vjezba=>{
-            if(!vjezba.value.some(v => v.id===vjezbe.id)) {
+            if(!vjezbe.value.some(v => v.id===vjezba.id)) {
                 if(!grupe[vjezba.glavni_misic]){
                     grupe[vjezba.glavni_misic]=[]
                 }
@@ -127,7 +137,7 @@
                 const splitData=splitSnap.data()
 
                 const promjenjenDan=splitData.dani.map(dan=>{
-                    if(dan.dan==danId){
+                    if(dan.dan===danId){
                         const promjenjeniSetovi={}
                         vjezbe.value.forEach(v=>{
                             promjenjeniSetovi[v.id]=v.brojSetova
@@ -207,7 +217,23 @@
 
         <div v-if="izbornik">
             <div>
-                a
+                <h3 class="text-xl font-bold mb-4">Odaberi vježbe</h3>
+
+                <div v-for="(grupa, misic) in grupiraneVjezbe">
+                    <h4> {{ misic }}</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                        <div v-for="v in grupa" :key="v.id" class="border p-3 rounded cursor-pointer hover:bg-gray-50">
+                            <img :src="v.slika" class="w-full h-24 object-cover mb-2">
+                            <p class="font-medium">{{ v.naziv }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button @click="izbornik = false" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">
+                    Zatvori
+                </button>  
+
+
             </div>
         </div>
 
