@@ -115,6 +115,17 @@
         return grupe
     })
 
+    const grupiraneVjezbeUDanu = computed(() => {
+        const grupe = {}
+        vjezbe.value.forEach(v => {
+            if (!grupe[v.glavni_misic]) {
+                grupe[v.glavni_misic] = []
+            }
+            grupe[v.glavni_misic].push(v)
+        })
+        return grupe
+    })
+
     const smanjiSetove = (vjezba) => {
         if (vjezba.brojSetova > 1) {
             vjezba.brojSetova--
@@ -178,30 +189,32 @@
             <h2 class="text-xl font-bold mb-4">{{ danPodaci.naziv || 'Nepoznat dan' }}</h2>
             
             <ul class="space-y-4">
-            <li v-for="v in vjezbe" :key="v.id" class="border rounded-lg">
-                <h3 class="font-semibold text-lg">{{ v.naziv }}</h3>
-                <img :src="v.slika" :alt="v.naziv" class="my-2 w-50 h-auto rounded">
-                <p class="text-gray-700">{{ v.opis }}</p>
-                
-                <div class="mt-2">
-                    <p>Glavni mišić: {{ v.glavni_misic }}</p>
-                    <p v-if="v.ostali_misici?.length">
-                        Ostali mišići: {{ v.ostali_misici.join(', ') }}
-                    </p>
-                    <p class="mt-2 font-medium">
-                        Broj setova: 
-                        <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="smanjiSetove(v)">
-                            -
-                        </button>{{ v.brojSetova }}
-                        <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="povecajSetove(v)">
-                            +
+            <div v-for="(grupa, misic) in grupiraneVjezbeUDanu" :key="misic" class="mb-6">
+                <h3 class="text-lg font-bold mb-2">{{ misic }}</h3>
+                <div v-for="v in grupa" :key="v.id" class="border rounded-lg p-3">
+                    <h4 class="font-semibold">{{ v.naziv }}</h4>
+                    <img :src="v.slika" :alt="v.naziv" class="my-2 w-50 h-auto rounded">
+                    <p class="text-gray-700">{{ v.opis }}</p>    
+                    <div class="mt-2">
+                        <p>Glavni mišić: {{ v.glavni_misic }}</p>
+                        <p v-if="v.ostali_misici?.length">
+                            Ostali mišići: {{ v.ostali_misici.join(', ') }}
+                        </p>
+                        <p class="mt-2 font-medium">
+                            Broj setova: 
+                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="smanjiSetove(v)">
+                                -
+                            </button>{{ v.brojSetova }}
+                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="povecajSetove(v)">
+                                +
+                            </button>
+                        </p>
+                        <button class="border bg-black text-white hover:bg-red-800 p-2">
+                            ukloni vježbu
                         </button>
-                    </p>
-                    <button class="border bg-black text-white hover:bg-red-800 p-2">
-                        ukloni vježbu
-                    </button>
+                    </div>
                 </div>
-            </li>
+            </div>
             <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2" @click="izbornik=true">
                 dodaj vježbu
             </button>
@@ -220,7 +233,7 @@
                 <h3 class="text-xl font-bold mb-4">Odaberi vježbe</h3>
 
                 <div v-for="(grupa, misic) in grupiraneVjezbe">
-                    <h4> {{ misic }}</h4>
+                    <h4 class="font-bold"> {{ misic }}</h4>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
                         <div v-for="v in grupa" :key="v.id" class="border p-3 rounded cursor-pointer hover:bg-gray-50">
                             <img :src="v.slika" class="w-full h-24 object-cover mb-2">
