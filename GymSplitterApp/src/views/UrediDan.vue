@@ -221,6 +221,49 @@
         }
     }
 
+    const ukloniVjezbu= async (vjezba) =>{
+        try{
+            loading.value= true
+
+            vjezbe.value= vjezbe.value.filter(v => v.id!==vjezba)
+
+            const splitRef= doc(db, `users/${userStore.currentUser.uid}/splits/${trenutniSplitId.value}`)
+            const splitSnap= await getDoc(splitRef)
+
+            if (!splitSnap.exists()) {
+                console.error("Split ne postoji")
+                return
+            }
+
+            const splitData= splitSnap.data()
+
+            const promjeniDan= splitData.dani.map(dan => {
+                if (Number(dan.dan) === Number(danId)){
+                    const noveVjezbe = { 
+                        ...(dan.setovi || {}) 
+                    }
+                    delete noveVjezbe[vjezba]
+
+                    return {
+                        ...dan,
+                        vjezbe: (dan.vjezbe || []).filter(id => id !== vjezba),
+                        setovi: noveVjezbe
+                    }
+
+                }
+                return dan
+            })
+
+            await updateDoc(splitRef, {
+                dani: promjeniDan
+            })
+        } catch (error) {
+            console.error("Greška:", error)
+        } finally {
+            loading.value = false
+        }
+    }
+
     onMounted(async () => {
         await dohvatiSplit()
         await dohvatiDan()
@@ -255,8 +298,9 @@
                                 +
                             </button>
                         </p>
-                        <button class="border bg-black text-white hover:bg-red-800 p-2">
-                            ukloni vježbu
+                        <button class="border bg-black text-white hover:bg-red-800 p-2"
+                        @click="ukloniVjezbu(v.id)">
+                            Ukloni vježbu
                         </button>
                     </div>
                 </div>
