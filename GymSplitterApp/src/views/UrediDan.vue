@@ -176,6 +176,51 @@
         }
     }
 
+    const dodajVjezbu= async (novaVjezba) =>{
+        try{
+            loading.value=true
+
+            vjezbe.value.push({
+                id: novaVjezba.id,
+                naziv: novaVjezba.naziv,
+                opis: novaVjezba.Opis,
+                slika: novaVjezba.slika,
+                glavni_misic: novaVjezba.glavni_misic,
+                ostali_misici: novaVjezba.ostali_misici || [],
+                brojSetova: 1
+            })
+
+            const splitRef= doc(db, `users/${userStore.currentUser.uid}/splits/${trenutniSplitId.value}`)
+            const splitSnap = await getDoc(splitRef)
+
+            const splitData=splitSnap.data()
+
+            const promjeniDan=splitData.dani.map(dan =>{
+                if(Number(dan.dan) === Number(danId)){
+                    return{
+                        ...dan,
+                        vjezbe: [...(dan.vjezbe || []), novaVjezba.id],
+                        setovi: {
+                            ...(dan.setovi || {}),
+                            [novaVjezba.id]: 1
+                        }
+                    }
+                }
+                return dan
+            })
+
+            await updateDoc(splitRef, {
+                dani: promjeniDan
+            })
+                
+        } catch (error) {
+            console.error("Greška:", error)
+        } finally {
+            loading.value = false
+            izbornik.value=false
+        }
+    }
+
     onMounted(async () => {
         await dohvatiSplit()
         await dohvatiDan()
@@ -204,7 +249,8 @@
                             Broj setova: 
                             <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="smanjiSetove(v)">
                                 -
-                            </button>{{ v.brojSetova }}
+                            </button>
+                            {{ v.brojSetova }}
                             <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="povecajSetove(v)">
                                 +
                             </button>
@@ -228,14 +274,15 @@
             <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif"/>
         </div>
 
-        <div v-if="izbornik">
+        <div v-if="izbornik && !loading">
             <div>
                 <h3 class="text-xl font-bold mb-4">Odaberi vježbe</h3>
 
                 <div v-for="(grupa, misic) in grupiraneVjezbe">
                     <h4 class="font-bold"> {{ misic }}</h4>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
-                        <div v-for="v in grupa" :key="v.id" class="border p-3 rounded cursor-pointer hover:bg-gray-50">
+                        <div v-for="v in grupa" :key="v.id" class="border p-3 rounded cursor-pointer hover:bg-gray-50"
+                        @click="dodajVjezbu(v)">
                             <img :src="v.slika" class="w-full h-24 object-cover mb-2">
                             <p class="font-medium">{{ v.naziv }}</p>
                         </div>
