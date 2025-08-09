@@ -200,10 +200,7 @@
                     return{
                         ...dan,
                         vjezbe: [...(dan.vjezbe || []), novaVjezba.id],
-                        setovi: {
-                            ...(dan.setovi || {}),
-                            [novaVjezba.id]: 1
-                        }
+                        setovi: {...(dan.setovi || {}), [novaVjezba.id]: 1}
                     }
                 }
                 return dan
@@ -273,21 +270,26 @@
 
 <template>
     <div class="flex">
-        <div v-if="!loading && !detalji && !izbornik">
+        <div v-if="!loading && !izbornik">
             <h2 class="text-xl font-bold mb-4">{{ danPodaci.naziv || 'Nepoznat dan' }}</h2>
             
             <ul class="space-y-4">
-            <div v-for="(grupa, misic) in grupiraneVjezbeUDanu" :key="misic" class="mb-6">
+            <div v-for="(grupa, misic) in grupiraneVjezbeUDanu" :key="misic" class="mb-6" @click="detalji=true">
                 <h3 class="text-lg font-bold mb-2">{{ misic }}</h3>
                 <div v-for="v in grupa" :key="v.id" class="border rounded-lg p-3">
                     <h4 class="font-semibold">{{ v.naziv }}</h4>
                     <img :src="v.slika" :alt="v.naziv" class="my-2 w-50 h-auto rounded">
-                    <p class="text-gray-700">{{ v.opis }}</p>    
                     <div class="mt-2">
-                        <p>Glavni mišić: {{ v.glavni_misic }}</p>
-                        <p v-if="v.ostali_misici?.length">
-                            Ostali mišići: {{ v.ostali_misici.join(', ') }}
-                        </p>
+
+                        <div v-if="detalji" @click="detalji=false">
+                            <p class="text-gray-700">{{ v.opis }}</p>    
+
+                            <p>Glavni mišić: {{ v.glavni_misic }}</p>
+                            <p v-if="v.ostali_misici?.length">
+                                Ostali mišići: {{ v.ostali_misici.join(', ') }}
+                            </p>
+                        </div>
+
                         <p class="mt-2 font-medium">
                             Broj setova: 
                             <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="smanjiSetove(v)">
@@ -322,6 +324,10 @@
             <div>
                 <h3 class="text-xl font-bold mb-4">Odaberi vježbe</h3>
 
+                <RouterLink to="/UserVjezbaMaker" class="border bg-red-500 text-white hover:bg-red-300 p-2">
+                    Dodaj vlastitu
+                </RouterLink>
+
                 <div v-for="(grupa, misic) in grupiraneVjezbe">
                     <h4 class="font-bold"> {{ misic }}</h4>
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2">
@@ -341,13 +347,9 @@
             </div>
         </div>
 
+        
+
     </div>
   
- 
 
-    <div v-if="detalji">
-        detalji
-    </div>
-
-  
 </template>

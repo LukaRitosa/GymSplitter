@@ -42,7 +42,7 @@
             </div>
             
             <div class="flex justify-center border-b border-gray-300 mb-6">
-                <span class="px-4 py-2 border-b-2 font-semibold border-red-700 text-red-700">Prijava</span>
+                <RouterLink to="/" class="px-4 py-2 font-semibold text-gray-700 hover:text-red-700">Prijava</RouterLink>
                 <RouterLink to="/registracija" class="px-4 py-2 font-semibold text-gray-700 hover:text-red-700">Registracija</RouterLink>
             </div>
 
