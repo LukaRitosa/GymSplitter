@@ -23,7 +23,6 @@
     const danPodaci = ref({})
     const vjezbe = ref([])
     const sveVježbe=ref([])
-    const noveVježbe=ref([])
 
     const loading = ref(false)
     const detalji=ref(false)
