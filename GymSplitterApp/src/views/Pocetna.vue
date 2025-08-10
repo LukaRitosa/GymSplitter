@@ -94,6 +94,10 @@
             <RouterLink to="/Split" class="w-full bg-green-800 text-white rounded hover:bg-red-600 p-2 font-semibold"> Split</RouterLink>
         </div>
 
+        <div >
+            <RouterLink to="/kalendar" class="w-full bg-pink-800 text-white rounded hover:bg-pink-600 p-2 font-semibold"> Kaledar</RouterLink>
+        </div>
+
 
         <form @submit.prevent="logout">
             <button class="border bg-yellow-500 text-white hover:bg-yellow-300 p-2" type="submit">Odjava</button>
