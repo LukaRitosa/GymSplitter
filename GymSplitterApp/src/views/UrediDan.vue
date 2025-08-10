@@ -66,8 +66,14 @@
         try {
             const rez = []
             for (const id of vjezbeIds) {
-                const vjezbaRef = doc(db, 'vjezbe', id)
-                const vjezbaSnap = await getDoc(vjezbaRef)
+                let vjezbaRef = doc(db, 'vjezbe', id)
+                let vjezbaSnap = await getDoc(vjezbaRef)
+                
+                if (!vjezbaSnap.exists()) {
+                    vjezbaRef = doc(db, `users/${userStore.currentUser.uid}/customVjezbe`, id)
+                    vjezbaSnap = await getDoc(vjezbaRef)
+                }
+
                 if (vjezbaSnap.exists()) {
                     rez.push({
                     id,
@@ -284,6 +290,11 @@
 
 <template>
     <div class="flex">
+        
+        <div v-if="loading">
+            <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif"/>
+        </div>
+
         <div v-if="!loading && !izbornik">
             <h2 class="text-xl font-bold mb-4">{{ danPodaci.naziv || 'Nepoznat dan' }}</h2>
             
@@ -329,10 +340,6 @@
                 spremi promjene
             </button>
         </div>
-        
-        <div v-else-if="loading">
-            <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif"/>
-        </div>
 
         <div v-if="izbornik && !loading">
             <div>
@@ -356,12 +363,8 @@
                 <button @click="izbornik = false" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded">
                     Zatvori
                 </button>  
-
-
             </div>
         </div>
-
-        
 
     </div>
   
