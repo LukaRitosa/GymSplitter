@@ -39,7 +39,7 @@
         trenutniSplitId.value = userSnap.data().trenutniSplit
         }
     } catch (error) {
-        console.error("Greška:", error)
+        console.error("Greška pri dohvaćanju:", error)
     }
     }
 
@@ -58,7 +58,7 @@
         }
         }
     } catch (error) {
-        console.error("Greška:", error)
+        console.error("Greška pri dohvaćanju:", error)
     }
     }
 
@@ -90,13 +90,28 @@
 
     const dohvatiSveVjezbe= async () => {
         try{
-            const querySnapshot = await getDocs(collection(db, 'vjezbe'))
-            sveVježbe.value=querySnapshot.docs.map(doc => ({
-                id:doc.id,
-                ...doc.data()
-            }))
+            const sve=[]
+
+            const globalSnap= await getDocs(collection(db, 'vjezbe'))
+                globalSnap.forEach(docSnap => {
+                sve.push({
+                    id: docSnap.id,
+                    ...docSnap.data()
+                })
+            })
+            
+            const customSnap= await getDocs(collection(db, `users/${userStore.currentUser.uid}/customVjezbe`))
+                customSnap.forEach(docSnap => {
+                sve.push({
+                    id: docSnap.id,
+                    ...docSnap.data(),
+                    custom: true
+                })
+            })
+            
+            sveVježbe.value=sve
         }
-        catch{
+        catch (error){
             console.error("Greška pri dohvaćanju vježbi:", error)
         }
     }
@@ -168,7 +183,7 @@
             }
         promjena.value=false
         }
-        catch{
+        catch (error){
             console.error("Greška pri spremanju:", error)
         } finally {
             loading.value = false
@@ -210,7 +225,7 @@
             })
                 
         } catch (error) {
-            console.error("Greška:", error)
+            console.error("Greška pri dodavanju:", error)
         } finally {
             loading.value = false
             izbornik.value=false
@@ -254,7 +269,7 @@
                 dani: promjeniDan
             })
         } catch (error) {
-            console.error("Greška:", error)
+            console.error("Greška pri uklanjanju:", error)
         } finally {
             loading.value = false
         }
