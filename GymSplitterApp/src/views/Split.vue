@@ -57,6 +57,7 @@
 
     <ul class="mt-2 list-disc pl-5 text-sm text-gray-700">
         <li v-for="dan in splitPodaci.dani" :key="dan.dan" class="cursor-pointer hover:text-red-600"
+        :class="{'font-bold text-red-800': dan.dan === (splitPodaci.sljedeci_dan + 1)}"
         @click="router.push(`/UrediDan/${dan.dan}`)">
             Dan {{ dan.dan }}  {{ dan.naziv }} ({{ dan.vjezbe.length }} vježba)
         </li>
