@@ -58,7 +58,8 @@
                             acc[vjezbaId] = 1
                             return acc
                     }, {})
-                }))
+                })),
+                sljedeci_dan: 0
             }
 
             await addDoc(collection(db, 'splits'), noviSplit)
