@@ -38,7 +38,8 @@
                 email: userCredential.user.email,
                 iskustvo: null,
                 slobodnoVrijeme: null,
-                trenutniSplit: null
+                trenutniSplit: null,
+                slobodni_dani: []
             })
 
             poruka.value = { error: false, message: 'Korisnik registriran!' }
