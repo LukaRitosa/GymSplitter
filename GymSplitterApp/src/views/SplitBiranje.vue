@@ -1,7 +1,7 @@
 <script setup>
     import { RouterLink, useRouter } from 'vue-router'
     import { ref, onMounted } from 'vue'
-    import { collection, getDocs, doc, setDoc } from 'firebase/firestore'
+    import { collection, getDocs, doc, setDoc, getDoc } from 'firebase/firestore'
     import { useUserStore } from '@/stores/userStore'
     import { db } from '@/firebase'
 
@@ -18,16 +18,55 @@
     onMounted(dohvatiSplitove)
 
     const odaberiSplit = async (split) => {
+        
+        const userDocRef=doc(db, `users/${userStore.currentUser.uid}`)
+        const userSnap=await getDoc(userDocRef)
 
-        const userSplitRef = doc(db, `users/${userStore.currentUser.uid}/splits/${split.id}`)
-        await setDoc(userSplitRef, JSON.parse(JSON.stringify(split)))
+        if (!userSnap.exists()) {
+            alert("Korisnički podaci nisu pronađeni")
+            return
+        }
 
-        const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
-        await setDoc(userDocRef, { trenutniSplit: split.id }, { merge: true })
+        const userData=userSnap.data()
+        const slobodniDani=userData.slobodni_dani || []
+        const daniUTjednu=['Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja']
+
+        const kalendar={}
+        let trenutniDanSplita=0
+
+
+        for (let i=0; i<14; i++){
+            const danUTjednu=daniUTjednu[i % 7]
+            const tjedan=Math.floor(i/7) + 1
+            const kljuc=`Tjedan${tjedan}_${danUTjednu}`
+        
+            if (slobodniDani.includes(danUTjednu)){
+                const danSplita=split.dani[trenutniDanSplita % split.broj_dana]
+
+                kalendar[kljuc] = {
+                    dan_u_tjednu: danUTjednu,
+                    dan_u_ciklusu: i + 1,
+                    split_dan_id: danSplita.dan, 
+                    naziv: danSplita.naziv      
+                }
+                trenutniDanSplita++
+            } 
+            else {
+                kalendar[kljuc] = {
+                    dan_u_tjednu: danUTjednu,
+                    dan_u_ciklusu: i + 1,
+                    split_dan_id: null,
+                    naziv: 'Odmor'
+                }
+            }
+        }
+
+        await setDoc(userDocRef, {trenutniSplit: split.id, kalendar, sljedeci_dan: 0}, { merge: true })
 
         router.push('/Split')
 
     }
+
 
 </script>
 
