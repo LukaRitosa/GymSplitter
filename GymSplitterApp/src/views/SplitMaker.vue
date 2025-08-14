@@ -58,7 +58,8 @@
                 kalendar[`Tjedan${Math.floor(i/7)+1}_${danUTjednu}`] = {
                     dan_u_tjednu: danUTjednu,
                     dan_u_ciklusu: i + 1,
-                    dan_splita: null
+                    dan_splita: null,
+                    naziv_dana: "Odmor"
                 }
             }
 
@@ -73,7 +74,7 @@
                     }, {})
                 })),
                 sljedeci_dan: 0,
-                kalednar: kalendar
+                kalendar: kalendar
             }
 
             await addDoc(collection(db, 'splits'), noviSplit)
