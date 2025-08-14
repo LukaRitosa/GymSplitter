@@ -49,6 +49,9 @@
     const stvoriSplit= async () => {
         loading.value=true
         try{
+
+            const kalendar = Array(14).fill(null)
+
             const noviSplit={
                 naziv: naziv.value,
                 broj_dana: broj_dana.value,
@@ -59,7 +62,8 @@
                             return acc
                     }, {})
                 })),
-                sljedeci_dan: 0
+                sljedeci_dan: 0,
+                klednar: kalendar
             }
 
             await addDoc(collection(db, 'splits'), noviSplit)
