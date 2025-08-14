@@ -50,7 +50,17 @@
         loading.value=true
         try{
 
-            const kalendar = Array(14).fill(null)
+            const daniUTjednu = ['Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja']
+            const kalendar = {}
+
+            for (let i = 0; i < 14; i++) {
+                const danUTjednu = daniUTjednu[i % 7]
+                kalendar[`Tjedan${Math.floor(i/7)+1}_${danUTjednu}`] = {
+                    dan_u_tjednu: danUTjednu,
+                    dan_u_ciklusu: i + 1,
+                    dan_splita: null
+                }
+            }
 
             const noviSplit={
                 naziv: naziv.value,
@@ -63,7 +73,7 @@
                     }, {})
                 })),
                 sljedeci_dan: 0,
-                klednar: kalendar
+                kalednar: kalendar
             }
 
             await addDoc(collection(db, 'splits'), noviSplit)
