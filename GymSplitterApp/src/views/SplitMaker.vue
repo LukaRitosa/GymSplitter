@@ -58,8 +58,8 @@
                 kalendar[`Tjedan${Math.floor(i/7)+1}_${danUTjednu}`] = {
                     dan_u_tjednu: danUTjednu,
                     dan_u_ciklusu: i + 1,
-                    dan_splita: null,
-                    naziv_dana: "Odmor"
+                    split_dan_id: null,
+                    naziv: "Odmor"
                 }
             }
 
