@@ -1,7 +1,7 @@
 <script setup>
     import { ref, computed, onMounted } from 'vue'
     import { useRouter } from 'vue-router'
-    import { doc, getDoc } from 'firebase/firestore'
+    import { doc, getDoc, updateDoc } from 'firebase/firestore'
     import { db } from '@/firebase'
     import { useUserStore } from '@/stores/userStore'
 
@@ -16,11 +16,14 @@
 
     const tjedni=ref([])
 
+    const danasnji_dan= new Date()
+
 
     const generirajKalendar = () => {
         loading.value = true
         const danas = new Date()
         const kalendar = []
+    
 
         for (let i = 0; i < 14; i++) {
             const datum = new Date(danas)
@@ -32,16 +35,14 @@
                 dan_u_mjesecu: datum.getDate(),
                 mjesec: datum.getMonth() + 1,
                 godina: datum.getFullYear(),
-                tjedan: Math.floor(i / 7) + 1
+                tjedan: Math.floor(i / 7) + 1,
+                je_danas: i===0
             })
         }
+    
+    tjedni.value = kalendar;
+    loading.value = false;
 
-        const tjedniGrupirani = dani_u_tjednu.map(dan => ({
-            dan: dan,
-            datumi: kalendar.filter(d => d.dan_u_tjednu === dan)
-        }))
-
-        tjedni.value = tjedniGrupirani
     }
 
     const dohvatiKalendar = async () => {
@@ -70,6 +71,7 @@
         await dohvatiKalendar()
     })
 
+
 </script>
 
 <template>
@@ -82,21 +84,41 @@
             <h3 class="text-xl font-bold">Kalendar</h3>
 
             <div class="grid grid-cols-7 gap-2 min-w-max">
-                <div v-for="dan in tjedni" class="text-center">            
+                <div v-for="(datum, index) in tjedni" class="text-center">           
                     <div class="font-bold py-2 border-b sticky top-0 bg-white">
-                        {{ dan.dan }}
+                        {{ datum.dan_u_tjednu }}
                     </div>
-                    <div v-for="datum in dan.datumi" class="p-2 border rounded">
-                        <div class="text-sm font-medium">
-                            {{ datum.dan_u_mjesecu }}.{{ datum.mjesec }}.
+                    <div class="text-sm font-medium">
+                        {{ datum.dan_u_mjesecu }}.{{ datum.mjesec }}.
+                    </div>
+                    <div v-if="getTreningZaDatum(datum).split_dan_id !== null" 
+                            class="mt-1 text-xs font-semibold p-1 rounded bg-white bg-opacity-70">
+                        {{ getTreningZaDatum(datum).naziv }}
+
+                        <div>
+                            <button class="border bg-gray-500 text-white hover:bg-gray-300 p-2">
+                                Odmor
+                            </button>
                         </div>
-                        <div v-if="getTreningZaDatum(datum).split_dan_id !== null" 
-                             class="mt-1 text-xs font-semibold p-1 rounded bg-white bg-opacity-70">
-                            {{ getTreningZaDatum(datum).naziv }}
+
+                        <div>
+                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2">
+                                Preskoči
+                            </button>
                         </div>
-                        <div v-else class="mt-1 text-xs text-gray-500">
-                            Odmor
+                        
+
+                        
+                        
+                    </div>
+                    <div v-else class="mt-1 text-xs text-gray-500">
+                        Odmor
+                        <div>
+                            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2">
+                                Otkaži odmor
+                            </button> 
                         </div>
+                        
                     </div>
                 </div>
             </div>
