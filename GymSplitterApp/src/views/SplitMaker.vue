@@ -55,9 +55,12 @@
 
             for (let i = 0; i < 14; i++) {
                 const danUTjednu = daniUTjednu[i % 7]
-                kalendar[`Tjedan${Math.floor(i/7)+1}_${danUTjednu}`] = {
+                const tjedan = Math.floor(i / 7) + 1  
+
+                kalendar[String(i)] = {
+                    tjedan,
                     dan_u_tjednu: danUTjednu,
-                    dan_u_ciklusu: i + 1,
+                    dan_u_ciklusu: null,
                     split_dan_id: null,
                     naziv: "Odmor"
                 }

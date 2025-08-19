@@ -76,12 +76,13 @@
             for (let i = 0; i < 14; i++) {
                 const danUTjednu=daniUTjednu[i % 7]
                 const tjedan=Math.floor(i/7) + 1
-                const kljuc=`Tjedan${tjedan}_${danUTjednu}`
+                const kljuc=String(i)
             
                 if (slobodniDani.includes(danUTjednu)) {
                     const danSplita = split_kopija.dani[trenutniDanSplita % split_kopija.broj_dana]
                     
                     kalendar[kljuc] = {
+                        tjedan,
                         dan_u_tjednu: danUTjednu,
                         dan_u_ciklusu: i + 1,
                         split_dan_id: danSplita.dan,
@@ -90,8 +91,9 @@
                     trenutniDanSplita++
                 } else {
                     kalendar[kljuc] = {
+                        tjedan,
                         dan_u_tjednu: danUTjednu,
-                        dan_u_ciklusu: i + 1,
+                        dan_u_ciklusu: null,
                         split_dan_id: null,
                         naziv: 'Odmor'
                     }
