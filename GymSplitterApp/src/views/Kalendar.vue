@@ -36,7 +36,6 @@
                 mjesec: datum.getMonth() + 1,
                 godina: datum.getFullYear(),
                 tjedan: Math.floor(i / 7) + 1,
-                je_danas: i===0
             })
         }
     
@@ -60,10 +59,66 @@
         }
     }
 
-    const getTreningZaDatum = (datum) => {
-        const kljuc = `Tjedan${datum.tjedan}_${datum.dan_u_tjednu}`
+    const getTreningZaDatum = (index) => {
+        const kljuc = String(index) 
         return kalendar_podaci.value[kljuc] || { naziv: 'Nije postavljeno', split_dan_id: null }
     }
+
+
+    const postaviOdmor = async (kliknutiDan) => {
+        loading.value = true
+        try {
+            const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
+            const snap = await getDoc(userDocRef)
+            if (!snap.exists()) return
+
+            const userData = snap.data()
+            const original = { ...(userData.kalendar || {}) }
+            const kalendar = { ...(userData.kalendar || {}) }
+
+            if (!kalendar[kliknutiDan]) return
+
+
+            const sviDani = Object.keys(original).filter(k => !isNaN(k)).map(k => Number(k)).sort((a, b) => a - b)
+
+            const radniDani = sviDani.filter(d => original[d].split_dan_id !== null)
+
+            const pozicija = radniDani.indexOf(kliknutiDan)
+
+            const originalniId = radniDani.map(d => original[d].split_dan_id)
+
+            kalendar[kliknutiDan] = {
+                ...kalendar[kliknutiDan],
+                split_dan_id: null,
+                naziv: 'Odmor',
+            }
+
+            for (let i = pozicija + 1; i < radniDani.length; i++) {
+                const trenutniDan = radniDani[i]
+                const noviId = originalniId[i - 1]
+                kalendar[trenutniDan] = {
+                    ...kalendar[trenutniDan],
+                    split_dan_id: noviId,
+                    naziv: String(noviId),
+                }
+            }
+
+            await updateDoc(userDocRef, { kalendar })
+
+            kalendar_podaci.value = kalendar
+
+        } catch (e) {            
+            console.error('Greška:', e)
+
+        } finally {
+            loading.value = false
+        }
+    }
+
+
+
+
+
 
 
     onMounted(async () => {
@@ -91,12 +146,12 @@
                     <div class="text-sm font-medium">
                         {{ datum.dan_u_mjesecu }}.{{ datum.mjesec }}.
                     </div>
-                    <div v-if="getTreningZaDatum(datum).split_dan_id !== null" 
+                    <div v-if="getTreningZaDatum(index).split_dan_id !== null" 
                             class="mt-1 text-xs font-semibold p-1 rounded bg-white bg-opacity-70">
-                        {{ getTreningZaDatum(datum).naziv }}
+                        {{ getTreningZaDatum( index).naziv }}
 
                         <div>
-                            <button class="border bg-gray-500 text-white hover:bg-gray-300 p-2">
+                            <button class="border bg-gray-500 text-white hover:bg-gray-300 p-2" @click="postaviOdmor(index)">
                                 Odmor
                             </button>
                         </div>
