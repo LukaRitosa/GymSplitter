@@ -116,6 +116,47 @@
     }
 
 
+    const preskoci= async (kliknutiDan) =>{
+        loading.value=true
+        try{
+            const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
+            const snap = await getDoc(userDocRef)
+            if (!snap.exists()) return
+
+            const userData = snap.data()
+            const kalendar = { ...(userData.kalendar || {}) }
+
+            const sviDani = Object.keys(kalendar).filter(k => !isNaN(k)).map(k => Number(k)).sort((a, b) => a - b)
+
+            const idx = sviDani.indexOf(kliknutiDan)
+            let sljedeciDan = null
+            for (let i = idx + 1; i < sviDani.length; i++) {
+                if (kalendar[sviDani[i]]?.split_dan_id !== null) {
+                    sljedeciDan = sviDani[i]
+                    break
+                }
+            }
+
+            if (sljedeciDan === null) {
+                loading.value = false
+                return
+            }
+
+            const temp = { ...kalendar[kliknutiDan] }
+            kalendar[kliknutiDan] = { ...kalendar[sljedeciDan] }
+            kalendar[sljedeciDan] = temp
+
+            await updateDoc(userDocRef, { kalendar })
+            kalendar_podaci.value = kalendar
+
+        } catch (e) {
+            console.error('Greška preskakanja:', e)
+
+        } finally {
+            loading.value = false
+        }
+    }
+
 
 
 
@@ -157,7 +198,7 @@
                         </div>
 
                         <div>
-                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2">
+                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="preskoci(index)">
                                 Preskoči
                             </button>
                         </div>
