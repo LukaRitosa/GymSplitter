@@ -96,10 +96,12 @@
             for (let i = pozicija + 1; i < radniDani.length; i++) {
                 const trenutniDan = radniDani[i]
                 const noviId = originalniId[i - 1]
+                const noviNaziv = Object.values(original).find(d => d.split_dan_id === noviId)?.naziv || String(noviId)
+
                 kalendar[trenutniDan] = {
                     ...kalendar[trenutniDan],
                     split_dan_id: noviId,
-                    naziv: String(noviId),
+                    naziv: noviNaziv,
                 }
             }
 
@@ -158,6 +160,65 @@
     }
 
 
+    const otkaziOdmor= async (kliknutiDan) =>{
+        loading.value=true
+        try{
+            const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
+            const snap = await getDoc(userDocRef)
+            if (!snap.exists()) return
+
+            const userData = snap.data()
+            const original = { ...(userData.kalendar || {}) }
+            const kalendar = { ...(userData.kalendar || {}) }
+
+            if (!kalendar[kliknutiDan]) return
+
+            const sviDani = Object.keys(original).filter(k => !isNaN(k)).map(k => Number(k)).sort((a, b) => a - b)
+
+            const radniDani = sviDani.filter(d => original[d].split_dan_id !== null)
+
+            const prvi_poslje= sviDani.find(d=> d> kliknutiDan && original[d].split_dan_id!==null)
+
+            if (!prvi_poslje) {
+                loading.value = false
+                return
+            }
+
+            const originalniId = radniDani.map(d => original[d].split_dan_id)
+
+            const prvi_id=original[prvi_poslje].split_dan_id
+            const prvi_naziv=original[prvi_poslje].naziv || String(prvi_id)
+
+            kalendar[kliknutiDan] = {
+                ...kalendar[kliknutiDan],
+                split_dan_id: prvi_id,
+                naziv: prvi_naziv,
+            }
+
+            const startPoz=radniDani.indexOf(prvi_poslje)
+
+            for(let i= startPoz; i< radniDani.length; i++){
+                const trenutniDan=radniDani[i]
+                const noviId=originalniId[i+1] || originalniId[i]
+                const noviNaziv=Object.values(original).find(d=>d.split_dan_id ===noviId)?.naziv || String(noviId)
+
+                kalendar[trenutniDan]={
+                    ...kalendar[trenutniDan],
+                    split_dan_id: noviId,
+                    naziv: noviNaziv
+                }
+            }
+
+            await updateDoc(userDocRef, {kalendar})
+            kalendar_podaci.value=kalendar
+
+        } catch(error){
+            console.error("Greška otkazivanja odmora:", error)
+
+        } finally{
+            loading.value=false
+        }
+    }
 
 
 
@@ -210,7 +271,7 @@
                     <div v-else class="mt-1 text-xs text-gray-500">
                         Odmor
                         <div>
-                            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2">
+                            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2" @click="otkaziOdmor(index)">
                                 Otkaži odmor
                             </button> 
                         </div>
