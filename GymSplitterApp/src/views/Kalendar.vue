@@ -8,7 +8,8 @@
     const router = useRouter()
     const userStore = useUserStore()
     const kalendar_podaci = ref({})
-    const loading = ref(true)
+    const loading = ref(false)
+    const edit=ref(false)
 
     const dani_u_tjednu=[
         'Nedjelja', 'Ponedjeljak',  'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota',  
@@ -220,7 +221,11 @@
         }
     }
 
-
+    const idiNaDan=(id)=>{
+        if (id !== null) {
+            router.push(`/UrediDan/${id}`)
+        }
+    }
 
 
     onMounted(async () => {
@@ -233,12 +238,22 @@
 
 <template>
     <div>
+        
         <div v-if="loading">
             <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="h-full" />
         </div>
 
+
+
         <div v-else class="overflow-x-auto">
             <h3 class="text-xl font-bold">Kalendar</h3>
+            <button @click="edit=true" class="border bg-red-500 text-white hover:bg-red-300 p-2" v-if="!edit">
+                Edit mode
+            </button>
+
+            <button @click="edit=false" class="border bg-red-500 text-white hover:bg-red-300 p-2" v-else>
+                Izađi iz edit mode
+            </button>
 
             <div class="grid grid-cols-7 gap-2 min-w-max">
                 <div v-for="(datum, index) in tjedni" class="text-center">           
@@ -252,26 +267,31 @@
                             class="mt-1 text-xs font-semibold p-1 rounded bg-white bg-opacity-70">
                         {{ getTreningZaDatum( index).naziv }}
 
-                        <div>
+                        <div v-if="edit">
                             <button class="border bg-gray-500 text-white hover:bg-gray-300 p-2" @click="postaviOdmor(index)">
                                 Odmor
                             </button>
                         </div>
 
-                        <div>
+                        <div v-if="edit">
                             <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="preskoci(index)">
                                 Preskoči
                             </button>
                         </div>
                         
-
+                        <div class="border bg-red-500 text-white hover:bg-red-300 p-2" v-if="!edit">
+                            <button @click="idiNaDan(getTreningZaDatum(index).split_dan_id)">
+                                Idi na dan
+                            </button>
+                        </div>
                         
                         
                     </div>
+
                     <div v-else class="mt-1 text-xs text-gray-500">
                         Odmor
                         <div>
-                            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2" @click="otkaziOdmor(index)">
+                            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2" @click="otkaziOdmor(index)" v-if="edit">
                                 Otkaži odmor
                             </button> 
                         </div>
