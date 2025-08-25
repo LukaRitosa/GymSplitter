@@ -30,36 +30,36 @@
     const izbornik=ref(false)
 
     const dohvatiSplit = async () => {
-    try {
-        loading.value = true
+        try {
+            loading.value = true
 
-        const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
-        const userSnap = await getDoc(userDocRef)
-        if (userSnap.exists()) {
-        trenutniSplitId.value = userSnap.data().trenutniSplit
+            const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
+            const userSnap = await getDoc(userDocRef)
+            if (userSnap.exists()) {
+            trenutniSplitId.value = userSnap.data().trenutniSplit
+            }
+        } catch (error) {
+            console.error("Greška pri dohvaćanju:", error)
         }
-    } catch (error) {
-        console.error("Greška pri dohvaćanju:", error)
-    }
     }
 
     const dohvatiDan = async () => {
-    try {
+        try {
 
-        const splitRef = doc(db, `users/${userStore.currentUser.uid}/splits/${trenutniSplitId.value}`)
-        const splitSnap = await getDoc(splitRef)
-        if (splitSnap.exists()) {
-        const splitData = splitSnap.data()
-        
-        const odabraniDan = splitData.dani?.find(d => Number(d.dan) === Number(danId))
-        if (odabraniDan) {
-            danPodaci.value = odabraniDan
-            await dohvatiVjezbe(odabraniDan.vjezbe || [])
+            const splitRef = doc(db, `users/${userStore.currentUser.uid}/splits/${trenutniSplitId.value}`)
+            const splitSnap = await getDoc(splitRef)
+            if (splitSnap.exists()) {
+            const splitData = splitSnap.data()
+            
+            const odabraniDan = splitData.dani?.find(d => Number(d.dan) === Number(danId))
+            if (odabraniDan) {
+                danPodaci.value = odabraniDan
+                await dohvatiVjezbe(odabraniDan.vjezbe || [])
+            }
+            }
+        } catch (error) {
+            console.error("Greška pri dohvaćanju:", error)
         }
-        }
-    } catch (error) {
-        console.error("Greška pri dohvaćanju:", error)
-    }
     }
 
     const dohvatiVjezbe = async (vjezbeIds) => {

@@ -46,53 +46,52 @@
     watch(broj_dana, updateDani)
     updateDani()
 
-    const stvoriSplit= async () => {
-        loading.value=true
-        try{
-
-            const daniUTjednu = ['Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja']
+    const stvoriSplit = async () => {
+        loading.value = true
+        try {
             const kalendar = {}
 
             for (let i = 0; i < 14; i++) {
-                const danUTjednu = daniUTjednu[i % 7]
-                const tjedan = Math.floor(i / 7) + 1  
+            const dummyDate = new Date(2004, 7, 6 + i) 
+                .toISOString()
+                .split('T')[0]
 
-                kalendar[String(i)] = {
-                    tjedan,
-                    dan_u_tjednu: danUTjednu,
-                    dan_u_ciklusu: null,
-                    split_dan_id: null,
-                    naziv: "Odmor"
-                }
+            kalendar[dummyDate] = {
+                split_dan_id: null,
+                naziv: "Odmor"
+            }
             }
 
-            const noviSplit={
-                naziv: naziv.value,
-                broj_dana: broj_dana.value,
-                dani: dani.value.map(dan => ({
-                        ...dan,
-                        setovi: dan.vjezbe.reduce((acc, vjezbaId) => {
-                            acc[vjezbaId] = 1
-                            return acc
-                    }, {})
-                })),
-                sljedeci_dan: 0,
-                kalendar: kalendar
+            const noviSplit = {
+            naziv: naziv.value,
+            broj_dana: broj_dana.value,
+            dani: dani.value.map(dan => ({
+                ...dan,
+                setovi: dan.vjezbe.reduce((acc, vjezbaId) => {
+                acc[vjezbaId] = 1
+                return acc
+                }, {})
+            })),
+            sljedeci_dan: 0,
+            kalendar: kalendar
             }
 
             await addDoc(collection(db, 'splits'), noviSplit)
 
-            poruka.value='Split uspješno dodan'
+            poruka.value = 'Split uspješno dodan'
             naziv.value = ''
             broj_dana.value = 1
             updateDani()
-        }
-        catch(error){
+        } catch (error) {
             console.error('Greška:', error)
             poruka.value = 'Greška pri spremanju.'
         }
-        loading.value=false
+        finally{
+            loading.value = false
+        }
+    
     }
+
 
 
 </script>

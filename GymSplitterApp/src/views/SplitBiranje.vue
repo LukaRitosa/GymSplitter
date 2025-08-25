@@ -53,49 +53,46 @@
     })
 
     const odaberiSplit = async (split) => {
-        loading.value=true
-        
-        try{
-            const userDocRef=doc(db, `users/${userStore.currentUser.uid}`)
-            const userSnap=await getDoc(userDocRef)
+        loading.value = true
+
+        try {
+            const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
+            const userSnap = await getDoc(userDocRef)
 
             if (!userSnap.exists()) {
                 alert("Korisnički podaci nisu pronađeni")
                 return
             }
-            
-            const userData=userSnap.data()
-            const slobodniDani=userData.slobodni_dani || []
-            const daniUTjednu=['Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja']
+
+            const userData = userSnap.data()
+            const slobodniDani = userData.slobodni_dani || []
 
             const split_kopija = JSON.parse(JSON.stringify(split))
 
-            const kalendar={}
-            let trenutniDanSplita=0
+            const kalendar = {}
+            let trenutniDanSplita = 0
+
+            const danas = new Date()
 
             for (let i = 0; i < 14; i++) {
-                const danUTjednu=daniUTjednu[i % 7]
-                const tjedan=Math.floor(i/7) + 1
-                const kljuc=String(i)
-            
+                const datum = new Date(danas)
+                datum.setDate(danas.getDate() + i)
+                const datumISO = datum.toLocaleDateString("sv-SE") 
+                const danUTjednu = datum.toLocaleDateString("hr-HR", { weekday: "long" })
+
                 if (slobodniDani.includes(danUTjednu)) {
                     const danSplita = split_kopija.dani[trenutniDanSplita % split_kopija.broj_dana]
-                    
-                    kalendar[kljuc] = {
-                        tjedan,
-                        dan_u_tjednu: danUTjednu,
-                        dan_u_ciklusu: i + 1,
+
+                    kalendar[datumISO] = {
                         split_dan_id: danSplita.dan,
                         naziv: danSplita.naziv
                     }
+
                     trenutniDanSplita++
                 } else {
-                    kalendar[kljuc] = {
-                        tjedan,
-                        dan_u_tjednu: danUTjednu,
-                        dan_u_ciklusu: null,
+                    kalendar[datumISO] = {
                         split_dan_id: null,
-                        naziv: 'Odmor'
+                        naziv: "Odmor"
                     }
                 }
             }
@@ -106,12 +103,11 @@
             await setDoc(userSplitRef, split_kopija)
 
             await setDoc(userDocRef, {
-                trenutniSplit: split.id,
-                kalendar: kalendar,
-                sljedeci_dan: 0
+                trenutniSplit: split.id
             }, { merge: true })
 
-                router.push('/Split')
+
+            router.push("/Split")
         } catch (error) {
             console.error("Greška pri spremanju splita:", error)
             alert("Došlo je do greške pri spremanju splita: " + error.message)
@@ -119,6 +115,7 @@
             loading.value = false
         }
     }
+
     
     onMounted(async () => {
         await dohvatiKorisnika()

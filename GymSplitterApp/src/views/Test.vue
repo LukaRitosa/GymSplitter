@@ -11,7 +11,7 @@
     const userStore=useUserStore()
 
     const dani_u_tjednu=[
-        'Ponedjeljak',  'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja', 
+        'ponedjeljak',  'utorak', 'srijeda', 'četvrtak', 'petak', 'subota', 'nedjelja', 
     ]
 
     const pitanja=[

@@ -32,6 +32,7 @@
 
             kalendar.push({
                 datum: datum,
+                id: formatDateKey(datum),
                 dan_u_tjednu: dani_u_tjednu[datum.getDay()], 
                 dan_u_mjesecu: datum.getDate(),
                 mjesec: datum.getMonth() + 1,
@@ -40,19 +41,34 @@
             })
         }
     
-    tjedni.value = kalendar;
-    loading.value = false;
+        tjedni.value = kalendar;
+        loading.value = false;
 
+    }
+
+
+    function formatDateKey(datum) {
+        const year = datum.getFullYear()
+        const month = String(datum.getMonth() + 1).padStart(2, '0')
+        const day = String(datum.getDate()).padStart(2, '0')
+        return `${year}-${month}-${day}`
     }
 
     const dohvatiKalendar = async () => {
         try {
+
             const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
-            const userSnap = await getDoc(userDocRef)
+            const userDocSnap = await getDoc(userDocRef)
+
+            const data = userDocSnap.data()
+                
+            const splitDocRef = doc(db, `users/${userStore.currentUser.uid}/splits/${data.trenutniSplit}`)
+            const splitSnap = await getDoc(splitDocRef)
             
-            if (userSnap.exists()) {
-                kalendar_podaci.value = userSnap.data().kalendar || {}
+            if (splitSnap.exists()) {
+                kalendar_podaci.value = splitSnap.data().kalendar || {}
             }
+
         } catch (error) {
             console.error("Greška pri dohvaćanju kalendara:", error)
         } finally {
@@ -60,54 +76,74 @@
         }
     }
 
-    const getTreningZaDatum = (index) => {
-        const kljuc = String(index) 
-        return kalendar_podaci.value[kljuc] || { naziv: 'Nije postavljeno', split_dan_id: null }
+    const getTreningZaDatum = (datum) => {
+        return kalendar_podaci.value[datum] || { naziv: 'Odmor', split_dan_id: null }
     }
 
 
     const postaviOdmor = async (kliknutiDan) => {
         loading.value = true
         try {
+
             const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
-            const snap = await getDoc(userDocRef)
+            const userDocSnap = await getDoc(userDocRef)
+            if (!userDocSnap.exists()) return
+            
+            const data = userDocSnap.data()
+
+            const splitDocRef = doc(db, `users/${userStore.currentUser.uid}/splits/${data.trenutniSplit}`)
+            const snap = await getDoc(splitDocRef)
             if (!snap.exists()) return
 
             const userData = snap.data()
-            const original = { ...(userData.kalendar || {}) }
-            const kalendar = { ...(userData.kalendar || {}) }
 
-            if (!kalendar[kliknutiDan]) return
+            const original = { ...(userData.kalendar || {}) } 
+            const kalendar = { ...original }
 
 
-            const sviDani = Object.keys(original).filter(k => !isNaN(k)).map(k => Number(k)).sort((a, b) => a - b)
+            const sviDani = Object.keys(kalendar).sort((a, b) => new Date(a) - new Date(b))
 
-            const radniDani = sviDani.filter(d => original[d].split_dan_id !== null)
+            
+            const idx = sviDani.indexOf(kliknutiDan)
 
-            const pozicija = radniDani.indexOf(kliknutiDan)
+            if(idx===-1) return
+            
 
-            const originalniId = radniDani.map(d => original[d].split_dan_id)
+            const radniDani = sviDani.slice(idx).filter(d => kalendar[d].split_dan_id !== null || d === kliknutiDan)
 
+            
+
+            if (radniDani.length === 0) return
+
+            let lastValid = {
+                split_dan_id: original[kliknutiDan].split_dan_id,
+                naziv: original[kliknutiDan].naziv
+            }
+
+            for (let i = 1; i < radniDani.length; i++) {
+                const trenutni = radniDani[i]
+
+                kalendar[trenutni] = {
+                    ...kalendar[trenutni],
+                    split_dan_id: lastValid.split_dan_id,
+                    naziv: lastValid.naziv
+                }
+
+                lastValid={
+                    split_dan_id: original[trenutni].split_dan_id,
+                    naziv: original[trenutni].naziv
+                }
+
+            }
+            
             kalendar[kliknutiDan] = {
                 ...kalendar[kliknutiDan],
                 split_dan_id: null,
-                naziv: 'Odmor',
+                naziv: "Odmor"
             }
 
-            for (let i = pozicija + 1; i < radniDani.length; i++) {
-                const trenutniDan = radniDani[i]
-                const noviId = originalniId[i - 1]
-                const noviNaziv = Object.values(original).find(d => d.split_dan_id === noviId)?.naziv || String(noviId)
 
-                kalendar[trenutniDan] = {
-                    ...kalendar[trenutniDan],
-                    split_dan_id: noviId,
-                    naziv: noviNaziv,
-                }
-            }
-
-            await updateDoc(userDocRef, { kalendar })
-
+            await updateDoc(splitDocRef, { kalendar })
             kalendar_podaci.value = kalendar
 
         } catch (e) {            
@@ -122,19 +158,26 @@
     const preskoci= async (kliknutiDan) =>{
         loading.value=true
         try{
+
             const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
-            const snap = await getDoc(userDocRef)
+            const userDocSnap = await getDoc(userDocRef)
+            if (!userDocSnap.exists()) return
+            
+            const data = userDocSnap.data()
+
+            const splitDocRef = doc(db, `users/${userStore.currentUser.uid}/splits/${data.trenutniSplit}`)
+            const snap = await getDoc(splitDocRef)
             if (!snap.exists()) return
 
             const userData = snap.data()
             const kalendar = { ...(userData.kalendar || {}) }
 
-            const sviDani = Object.keys(kalendar).filter(k => !isNaN(k)).map(k => Number(k)).sort((a, b) => a - b)
+            const sviDani = Object.keys(kalendar).sort((a, b) => new Date(a) - new Date(b))
 
             const idx = sviDani.indexOf(kliknutiDan)
             let sljedeciDan = null
             for (let i = idx + 1; i < sviDani.length; i++) {
-                if (kalendar[sviDani[i]]?.split_dan_id !== null) {
+                if (kalendar[sviDani[i]].split_dan_id !== null) {
                     sljedeciDan = sviDani[i]
                     break
                 }
@@ -149,7 +192,7 @@
             kalendar[kliknutiDan] = { ...kalendar[sljedeciDan] }
             kalendar[sljedeciDan] = temp
 
-            await updateDoc(userDocRef, { kalendar })
+            await updateDoc(splitDocRef, { kalendar })
             kalendar_podaci.value = kalendar
 
         } catch (e) {
@@ -164,8 +207,15 @@
     const otkaziOdmor= async (kliknutiDan) =>{
         loading.value=true
         try{
+
             const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
-            const snap = await getDoc(userDocRef)
+            const userDocSnap = await getDoc(userDocRef)
+            if (!userDocSnap.exists()) return
+            
+            const data = userDocSnap.data()
+
+            const splitDocRef = doc(db, `users/${userStore.currentUser.uid}/splits/${data.trenutniSplit}`)
+            const snap = await getDoc(splitDocRef)
             if (!snap.exists()) return
 
             const userData = snap.data()
@@ -174,7 +224,7 @@
 
             if (!kalendar[kliknutiDan]) return
 
-            const sviDani = Object.keys(original).filter(k => !isNaN(k)).map(k => Number(k)).sort((a, b) => a - b)
+            const sviDani = Object.keys(kalendar).sort((a, b) => new Date(a) - new Date(b))
 
             const radniDani = sviDani.filter(d => original[d].split_dan_id !== null)
 
@@ -210,7 +260,7 @@
                 }
             }
 
-            await updateDoc(userDocRef, {kalendar})
+            await updateDoc(splitDocRef, {kalendar})
             kalendar_podaci.value=kalendar
 
         } catch(error){
@@ -263,27 +313,28 @@
                     <div class="text-sm font-medium">
                         {{ datum.dan_u_mjesecu }}.{{ datum.mjesec }}.
                     </div>
-                    <div v-if="getTreningZaDatum(index).split_dan_id !== null" 
+                    <div v-if="getTreningZaDatum(datum.id).split_dan_id !== null" 
                             class="mt-1 text-xs font-semibold p-1 rounded bg-white bg-opacity-70">
-                        {{ getTreningZaDatum( index).naziv }}
+                        {{ getTreningZaDatum(datum.id).naziv }}
 
                         <div v-if="edit">
-                            <button class="border bg-gray-500 text-white hover:bg-gray-300 p-2" @click="postaviOdmor(index)">
+                            <button class="border bg-gray-500 text-white hover:bg-gray-300 p-2" @click="postaviOdmor(datum.id)">
                                 Odmor
                             </button>
                         </div>
 
                         <div v-if="edit">
-                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="preskoci(index)">
+                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="preskoci(datum.id)">
                                 Preskoči
                             </button>
                         </div>
-                        
-                        <div class="border bg-red-500 text-white hover:bg-red-300 p-2" v-if="!edit">
-                            <button @click="idiNaDan(getTreningZaDatum(index).split_dan_id)">
+
+                        <div v-else @click="idiNaDan(getTreningZaDatum(datum.id).split_dan_id)">
+                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2">
                                 Idi na dan
-                            </button>
+                            </button>    
                         </div>
+                        
                         
                         
                     </div>
@@ -291,7 +342,7 @@
                     <div v-else class="mt-1 text-xs text-gray-500">
                         Odmor
                         <div>
-                            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2" @click="otkaziOdmor(index)" v-if="edit">
+                            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2" @click="otkaziOdmor(datum.id)" v-if="edit">
                                 Otkaži odmor
                             </button> 
                         </div>
