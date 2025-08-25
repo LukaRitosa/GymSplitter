@@ -42,7 +42,6 @@
         }
     
         tjedni.value = kalendar;
-        loading.value = false;
 
     }
 
@@ -317,12 +316,12 @@
 
             let zadnji_datum=null
             for(const dan of sviDani){
-                if(dan<danas){
+                if(new Date(dan) < new Date(danas)){
                     brojac++
 
                     delete kalendar[dan]
                 }
-                zadnji_datum=dan
+                zadnji_datum=new Date(dan)
             }
 
             if(brojac===0){
@@ -354,15 +353,17 @@
             }
 
             else{
-                for(let i=1; i<brojac; i++){
+                for(let i=1; i<=brojac; i++){
                     zadnji_datum=new Date(zadnji_datum)
                     zadnji_datum.setDate(zadnji_datum.getDate()+i)
                     const datumISO = zadnji_datum.toLocaleDateString("sv-SE") 
                     const danUTjednu = zadnji_datum.toLocaleDateString("hr-HR", { weekday: "long" })
                     
-                    zadnji_split_dan=(zadnji_split_dan + i - (i- 1)) % split_broj_dana
+                    if(i!==1){
+                        zadnji_split_dan=(zadnji_split_dan + 1) % split_broj_dana
+                    }
 
-                    if(slobodni_dani[danUTjednu]){
+                    if(slobodni_dani.includes(danUTjednu)){
                         kalendar[datumISO]={
                             split_dan_id: split_dani[zadnji_split_dan].dan,
                             naziv: split_dani[zadnji_split_dan].naziv
@@ -399,7 +400,7 @@
 </script>
 
 <template>
-    <div>
+    <div class="min-h-screen flex flex-col items-center bg-gray-100 text-red-900 px-4">
         
         <div v-if="loading">
             <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="h-full" />
@@ -417,8 +418,8 @@
                 Izađi iz edit mode
             </button>
 
-            <div class="grid grid-cols-7 gap-2 min-w-max">
-                <div v-for="(datum, index) in tjedni" class="text-center">           
+            <div class="grid grid-cols-7 gap-2 min-w-max grid-red-7">
+                <div v-for="(datum, index) in tjedni" class="text-center border border-red-700">           
                     <div class="font-bold py-2 border-b sticky top-0 bg-white">
                         {{ datum.dan_u_tjednu }}
                     </div>
