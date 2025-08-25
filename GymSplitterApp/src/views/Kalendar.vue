@@ -277,10 +277,122 @@
         }
     }
 
+    const odrzavajKalendar= async () =>{
+        loading.value=true
+        try{
+            const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
+            const userDocSnap = await getDoc(userDocRef)
+            if (!userDocSnap.exists()) return
+            
+            const data = userDocSnap.data()
+            const slobodni_dani=data.slobodni_dani
+
+
+            const splitDocRef = doc(db, `users/${userStore.currentUser.uid}/splits/${data.trenutniSplit}`)
+            const snap = await getDoc(splitDocRef)
+            if (!snap.exists()) return
+
+            const split = snap.data()
+            const kalendar = { ...(split.kalendar || {}) }
+            const split_dani={...(data.dani || {})}
+            const split_broj_dana=split.broj_dana
+
+
+            const danas=formatDateKey(new Date)
+            let brojac=0
+            
+
+            const sviDani = Object.keys(kalendar).sort((a, b) => new Date(a) - new Date(b))
+            if (sviDani.length === 0) return
+
+            const radniDani = sviDani.filter(d => kalendar[d].split_dan_id !== null)
+
+            let zadnji_datum_id=null
+            for (const dan of radniDani) {
+                zadnji_datum_id = dan
+            }
+
+
+            let zadnji_split_dan=kalendar[zadnji_datum_id].split_dan_id
+
+            let zadnji_datum=null
+            for(const dan of sviDani){
+                if(dan<danas){
+                    brojac++
+
+                    delete kalendar[dan]
+                }
+                zadnji_datum=dan
+            }
+
+            if(brojac===0){
+                return
+            }
+
+            if(brojac===14){
+                for(let i=0; i<14; i++){
+                    const datum = new Date(danas)
+                    datum.setDate(danas.getDate() + i)
+                    const datumISO = datum.toLocaleDateString("sv-SE") 
+                    const danUTjednu = datum.toLocaleDateString("hr-HR", { weekday: "long" })
+
+                    zadnji_split_dan=(zadnji_split_dan + 1)  % split_broj_dana
+
+                    if(slobodni_dani[danUTjednu]){
+                        kalendar[datumISO]={
+                            split_dan_id: split_dani[zadnji_split_dan].dan,
+                            naziv: split_dani[zadnji_split_dan].naziv
+                        }
+                    }
+                    else{
+                        kalendar[datumISO]={
+                            split_dan_id: null,
+                            naziv: "Odmor"
+                        }
+                    }
+                }
+            }
+
+            else{
+                for(let i=1; i<brojac; i++){
+                    zadnji_datum=new Date(zadnji_datum)
+                    zadnji_datum.setDate(zadnji_datum.getDate()+i)
+                    const datumISO = zadnji_datum.toLocaleDateString("sv-SE") 
+                    const danUTjednu = zadnji_datum.toLocaleDateString("hr-HR", { weekday: "long" })
+                    
+                    zadnji_split_dan=(zadnji_split_dan + i - (i- 1)) % split_broj_dana
+
+                    if(slobodni_dani[danUTjednu]){
+                        kalendar[datumISO]={
+                            split_dan_id: split_dani[zadnji_split_dan].dan,
+                            naziv: split_dani[zadnji_split_dan].naziv
+                        }
+                    }
+                    else{
+                        kalendar[datumISO]={
+                            split_dan_id: null,
+                            naziv: "Odmor"
+                        }
+                    }
+                }
+            }
+
+
+            await updateDoc(splitDocRef, { kalendar })
+            kalendar_podaci.value = kalendar
+            
+        } catch(error){
+            console.error("Greška pri održavanju datuma", error)
+        } finally{
+            loading.value=false
+        }
+    }
+
 
     onMounted(async () => {
         generirajKalendar()
         await dohvatiKalendar()
+        odrzavajKalendar()
     })
 
 
