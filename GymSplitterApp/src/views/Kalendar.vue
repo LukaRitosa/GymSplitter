@@ -294,7 +294,7 @@
 
             const split = snap.data()
             const kalendar = { ...(split.kalendar || {}) }
-            const split_dani={...(data.dani || {})}
+            const split_dani={...(split.dani || {})}
             const split_broj_dana=split.broj_dana
 
 
