@@ -3,7 +3,6 @@ import Registracija from '../views/Registracija.vue'
 import Prijava from '../views/Prijava.vue'
 import Pocetna from '../views/Pocetna.vue'
 import Test from '../views/Test.vue'
-import Vjezbe from '../views/Vjezbe.vue'
 import adminPrijava from '../views/AdminPrijava.vue'
 import Admin from '../views/Admin.vue'
 import VjezbaMarer from '../views/VjezbaMaker.vue'
@@ -39,11 +38,6 @@ const router = createRouter({
        path: '/test',
        name: 'Test',
        component: Test
-     },
-     {
-       path: '/vjezbe',
-       name: 'Vjezbe',
-       component: Vjezbe
      },
     {
       path: '/adminPrijava',

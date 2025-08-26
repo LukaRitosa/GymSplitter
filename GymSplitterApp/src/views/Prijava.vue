@@ -79,8 +79,8 @@
                 <span v-else><img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="inline w-5 h-5" /></span>
             </button>
 
-            <div >
-                <RouterLink to="/adminPrijava" class="w-full bg-yellow-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Admin</RouterLink>
+            <div class="bg-black text-white rounded hover:bg-red-600 p-2 font-semibold w-full text-center">
+                <RouterLink to="/adminPrijava">Admin</RouterLink>
             </div>
 
             <div v-if="poruka.message" :class="poruka.error ? 'text-red-500' : 'text-green-600'">{{ poruka.message }}</div>

@@ -25,12 +25,14 @@
     }
     
     const getUser= async () => {
+        loading.value=true
         if (userStore.currentUser?.uid) {
             const docSnap = await getDoc(doc(db, 'users', userStore.currentUser.uid))
             if (docSnap.exists()) {
                 userPodaci.value = docSnap.data()
             }
         }
+        loading.value=false
     }
 
     const odaberiSplit= async (splitId) =>{
@@ -59,29 +61,32 @@
 
 <template>
 
-    <div v-if="!loading">
+    <div v-if="!loading" class="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-red-900 px-4 text-center">
+        <RouterLink to="/SplitBiranje" class="border bg-red-900 text-white rounded p-2 min-w-100 hover:bg-red-500">
+            +
+        </RouterLink>
+        
         <div>
-            <RouterLink to="/SplitBiranje" class="border bg-red-800 text-white">
-                +
-            </RouterLink>
 
-            <div v-for="split in splits" :key="split.id" @click="odaberiSplit(split.id)"
+            <div v-for="split in splits" :key="split.id" @click="odaberiSplit(split.id)" class="min-w-100"
                 :class="['p-4 m-2 rounded border', 
                 userPodaci?.trenutniSplit === split.id
-                    ? 'border-red-300 bg-red-800 text-white'                                     
-                    : 'border-gray-300 bg-gray-300']">
+                    ? 'border-red-300 bg-red-800 text-white hover:bg-red-400'                                     
+                    : 'border-gray-300 bg-gray-300 hover:bg-gray-200']">
                 {{ split.naziv }}
                 {{ split.broj_dana }}
             </div>
         </div>
+        
+        <RouterLink to="/pocetna" class="border bg-red-800 text-white rounded p-2 my-4 hover:bg-red-400">
+            Početna
+        </RouterLink>
     </div>
 
-    <div v-else>
+    <div v-else class="min-h-screen flex flex-col items-center px-4 justify-center">
         <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="h-full" />
     </div>
     
-    <RouterLink to="/pocetna" class="border bg-red-800 text-white">
-        pocetna
-    </RouterLink>
+    
     
 </template>

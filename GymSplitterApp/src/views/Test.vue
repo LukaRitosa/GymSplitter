@@ -15,17 +15,6 @@
     ]
 
     const pitanja=[
-        {
-            tekst:"Koliko iskustva treniranja u teretani imaš?",
-            odgovori: [
-                "Nikad nisam.",
-                "Manje od 3 mjeseca.",
-                "1-2 godine.",
-                "3-5 godina.",
-                "5+ godina.",        
-            ],
-            tip: 'radio' 
-        },
        {
             tekst: "Koji su ti slobodni dani?",
             odgovori: dani_u_tjednu,
@@ -34,7 +23,7 @@
     ]
 
     const brojSlobodnihDana = computed(() => {
-        return odgovori.value[1].length
+        return odgovori.value.length
     })
 
     const posaljiOdgovore = async () => {
@@ -42,8 +31,7 @@
 
         try{
             await updateDoc(doc(db, "users", user.uid), {
-                iskustvo: odgovori.value[0],
-                slobodni_dani: odgovori.value[1],
+                slobodni_dani: odgovori.value,
                 slobodnoVrijeme: `${brojSlobodnihDana.value} ${brojSlobodnihDana.value===1 ? 'dan' : 'dana'}`
             })
             router.push("/pocetna")
@@ -55,10 +43,7 @@
     }    
 
 
-    const odgovori = ref({
-        0: null, 
-        1: []  
-    })
+    const odgovori= ref([])
 
 
 </script>
@@ -66,19 +51,11 @@
 <template>
 
 
-        <div>
-            <h3>{{ pitanja[0].tekst }}</h3>
-            <div v-for="(odgovor) in pitanja[0].odgovori">
-                <input type="radio" v-model="odgovori[0]" :value="odgovor" :name="'pitanje0'"/>
-                <label>{{ odgovor }}</label>
-            </div>
-        </div>
-
-        <div>
-            <h3>{{ pitanja[1].tekst }}</h3>
+        <div v-for="p in pitanja">
+            <h3>{{ p.tekst }}</h3>
             <p>Odabrano dana: {{ brojSlobodnihDana }}</p>
-            <div v-for="(dan, idx) in pitanja[1].odgovori">
-                <input type="checkbox" v-model="odgovori[1]" :value="dan"/>
+            <div v-for="(dan, idx) in p.odgovori">
+                <input type="checkbox" v-model="odgovori" :value="dan"/>
                 <label :for="'dan_' + idx">{{ dan }}</label>
             </div>
         </div>

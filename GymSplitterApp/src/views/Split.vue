@@ -11,6 +11,8 @@
     const router=useRouter()
     const loadnig=ref(false)
 
+    const danas = ref(new Date().toLocaleDateString("sv-SE"))
+
 
     const dohvatiTrenutniSplit = async () => {
 
@@ -46,26 +48,36 @@
 
 
 <template>
-    <div v-if="splitPodaci">
+    <div v-if="splitPodaci" class="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-red-900 px-4 text-center">
 
-    <div >
-        <RouterLink to="/UserSplitovi" class="w-full bg-green-800 text-white rounded hover:bg-red-600 p-2 font-semibold"> Splitovi</RouterLink>
-    </div>
-
-    <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ splitPodaci.naziv }}</h2>
-
-    <p class="text-sm text-gray-600 mb-4">Broj dana: {{ splitPodaci.broj_dana }}</p>
-
-    <div class="grid grid-cols-1 gap-4">
-        <div v-for="dan in splitPodaci.dani" :key="dan.dan" class="p-6 rounded-lg border border-gray-300 shadow-md bg-red-900 text-white cursor-pointer hover:bg-red-700 transition"
-        :class="{'ring-4 ring-red-500': dan.dan === (splitPodaci.sljedeci_dan + 1)}" @click="router.push(`/UrediDan/${dan.dan}`)">
-            Dan {{ dan.dan }}  {{ dan.naziv }} ({{ dan.vjezbe.length }} vježba)
+        <div class="my-4">
+            <RouterLink to="/UserSplitovi" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold"> Splitovi</RouterLink>
         </div>
-    </div>
+
+        
+
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ splitPodaci.naziv }}</h2>
+
+        <p class="text-sm text-gray-600 mb-4">Broj dana: {{ splitPodaci.broj_dana }}</p>
+
+        <div class="grid grid-cols-1 gap-4 my-4">
+            <div v-for="dan in splitPodaci.dani" :key="dan.dan" class="p-6 rounded-lg border border-gray-300 shadow-md bg-red-900 text-white cursor-pointer hover:bg-red-700 transition"
+            :class="{'ring-4 ring-red-300': splitPodaci.kalendar[danas].split_dan_id === dan.dan}" @click="router.push(`/UrediDan/${dan.dan}`)">
+                Dan {{ dan.dan }}  {{ dan.naziv }} ({{ dan.vjezbe.length }} vježba)
+            </div>
+        </div>
+        
+        <div class="my-4">
+            <RouterLink to="/pocetna" class="w-full bg-red-600 text-white rounded hover:bg-red-400 p-2 font-semibold"> Početna</RouterLink>
+        </div>
+
+        <div class="my-4">
+            <RouterLink to="/kalendar" class="w-full bg-black text-white rounded hover:bg-red-400 p-2 font-semibold"> Kalendar</RouterLink>
+        </div>
 
     </div>
 
-    <div v-else>
+    <div v-else class="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-red-900 px-4 text-center">
         <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="h-full" />
     </div>
 

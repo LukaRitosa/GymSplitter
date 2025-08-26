@@ -16,21 +16,29 @@
 
 
     const dohvatiSplitove = async () => {
+        loading.value=true
+
         const snapshot = await getDocs(collection(db, 'splits'))
         splits.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
         splitovi_ucitani.value=true
+
+        loading.value=false
     }
 
     const dohvatiKorisnika= async() => {
+        loading.value=true
+
         const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
         const userSnap = await getDoc(userDocRef)
 
         if (userSnap.exists()) {
             userData.value = userSnap.data()
         }
+
+        loading.value=false
     }
 
-    const preporuceniSplitovi= computed (() => {
+    const preporuceniSplitovi= computed (() => {        
         if (!userData.value?.slobodni_dani || !splitovi_ucitani.value) return []
 
         const brojSlobodnihDana = userData.value.slobodni_dani.length
@@ -126,52 +134,69 @@
 
 <template>
 
-    <div v-if="!loading">
+    <div >
+        <RouterLink to="/UserSplitovi" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Nazad</RouterLink>
+    </div>
+
+    <div v-if="!loading" class="flex justify-center items-center min-h-screen flex-col">
 
         <div v-if="preporuceniSplitovi.length > 0">
-            <h2 class="text-2xl font-bold mb-4">Preporučeni splitovi</h2>
-            
-            <div v-for="split in preporuceniSplitovi" class="border rounded p-4 mb-4 shadow bg-blue-50">
-                <h3 class="text-xl font-semibold">{{ split.naziv }}</h3>
-                <p>Broj dana: {{ split.broj_dana }}</p>
-                
-                <ul class="mt-2 list-disc pl-5 text-sm text-gray-700">
-                    <li v-for="dan in split.dani" :key="dan.dan">
-                        Dan {{ dan.dan }} – {{ dan.naziv }} ({{ dan.vjezbe.length }} vježbi)
-                    </li>
-                </ul>
+            <h2 class="text-2xl font-bold mb-4 text-center">
+                Preporučeni splitovi
+            </h2>
 
-                <button @click="odaberiSplit(split)" class="mt-3 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded">
-                    Odaberi ovaj Split
-                </button>
+            <hr class="border-red-700 w-1/2 mx-auto mb-6" />
+           
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div v-for="split in preporuceniSplitovi" class="text-center flex flex-col items-center border rounded p-4 mb-4 shadow bg-red-50">
+                    <h3 class="text-xl font-semibold">{{ split.naziv }}</h3>
+                    <p>Broj dana: {{ split.broj_dana }}</p>
+                    
+                    <ul class="mt-2 list-disc pl-5 text-sm text-gray-700">
+                        <li v-for="dan in split.dani" :key="dan.dan">
+                            Dan {{ dan.dan }} – {{ dan.naziv }} ({{ dan.vjezbe.length }} vježbi)
+                        </li>
+                    </ul>
+
+                    <button @click="odaberiSplit(split)" class="mt-3 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded">
+                        Odaberi ovaj Split
+                    </button>
+                </div>
             </div>
-
         </div>
 
         <div>
-            <h2 class="text-2xl font-bold mb-4">Splitovi</h2>
-            <div v-for="split in ostaliSplitovi" class="border rounded p-4 mb-4 shadow">
-                <h3 class="text-xl font-semibold">{{ split.naziv }}</h3>
-                <p>Broj dana: {{ split.broj_dana }}</p>
+            <h2 class="text-2xl font-bold mb-4 text-center">
+                Splitovi
+            </h2>
 
-                <ul class="mt-2 list-disc pl-5 text-sm text-gray-700">
-                    <li v-for="dan in split.dani" :key="dan.dan">
-                    Dan {{ dan.dan }} – {{ dan.naziv }} ({{ dan.vjezbe.length }} vježbi)
-                    </li>
-                </ul>
+            <hr class="border-black-600 w-1/2 mx-auto mb-6" />
 
-                <button @click="odaberiSplit(split)" class="mt-3 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded">
-                    <span>
-                        Odaberi ovaj Split
-                    </span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     
-                </button>
+                <div v-for="split in ostaliSplitovi" class="border rounded p-4 mb-4 shadow text-center flex flex-col items-center">
+                    <h3 class="text-xl font-semibold">{{ split.naziv }}</h3>
+                    <p>Broj dana: {{ split.broj_dana }}</p>
+
+                    <ul class="mt-2 list-disc pl-5 text-sm text-gray-700">
+                        <li v-for="dan in split.dani" :key="dan.dan">
+                        Dan {{ dan.dan }} – {{ dan.naziv }} ({{ dan.vjezbe.length }} vježbi)
+                        </li>
+                    </ul>
+
+                    <button @click="odaberiSplit(split)" class="mt-3 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded">
+                        <span>
+                            Odaberi ovaj Split
+                        </span>
+                        
+                    </button>
+                </div>
             </div>
         </div>
     </div>
     
-    <div v-else>
-        <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="inline w-5 h-5" />
+    <div v-else class="min-h-screen flex flex-col items-center px-4 justify-center">
+        <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif"/>
     </div>
 
 </template>
