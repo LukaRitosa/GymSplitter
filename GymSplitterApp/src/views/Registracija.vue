@@ -36,7 +36,6 @@
             await setDoc(doc(db, "users", userCredential.user.uid), {
                 username: username.value,
                 email: userCredential.user.email,
-                iskustvo: null,
                 slobodnoVrijeme: null,
                 trenutniSplit: null,
                 slobodni_dani: []
