@@ -4,6 +4,8 @@
     import { db } from '@/firebase'
     import { useUserStore } from '@/stores/userStore'
     import { useRoute } from 'vue-router'
+    import { RouterLink } from 'vue-router'
+
     
 
     const route = useRoute()
@@ -295,7 +297,12 @@
         <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif"/>
     </div>
 
-    <div v-if="!loading && !izbornik" class="flex justify-center items-center min-h-screen flex-col">
+    <div v-if="!loading && !izbornik" class="flex justify-center items-center min-h-screen flex-col font-semibold">
+        
+        <div class="m-4">
+            <RouterLink to="/pocetna" class="w-full bg-black text-white rounded hover:bg-red-300 p-2"> Početna</RouterLink>
+        </div>
+
         <h2 class="text-2xl font-bold mb-4">
             {{ danPodaci.naziv || 'Nepoznat dan' }}
         </h2>
@@ -364,7 +371,7 @@
 
     </div>
 
-    <div v-if="izbornik && !loading" class="flex justify-center items-center min-h-screen flex-col">
+    <div v-if="izbornik && !loading" class="flex justify-center items-center min-h-screen flex-col font-semibold">
         <h3 class="text-2xl font-bold mb-4">
             Odaberi vježbe
         </h3>

@@ -96,14 +96,14 @@
                     <div>
                         <b>Lozinka:</b>                    
                     </div> 
-                    <input type="text" class="border p-1 w-full" placeholder="Lozinka..." v-model="password">
+                    <input type="password" class="border p-1 w-full" placeholder="Lozinka..." v-model="password">
                 </div>
                 
                 <div>
                     <div>
                         <b>Ponovi lozinku:</b>
                     </div>
-                    <input type="text" class="border p-1 w-full" placeholder="Ponovi lozinku..." v-model="password2">
+                    <input type="password" class="border p-1 w-full" placeholder="Ponovi lozinku..." v-model="password2">
                 </div>
 
                 <button :disabled="loading" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold" type="submit">

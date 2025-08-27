@@ -17,7 +17,6 @@
 
     const tjedni=ref([])
 
-    const danasnji_dan= new Date()
 
 
     const generirajKalendar = () => {
@@ -400,7 +399,7 @@
 </script>
 
 <template>
-    <div class="min-h-screen flex flex-col items-center bg-gray-100 text-red-900 px-4">
+    <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-red-900 px-4">
         
         <div v-if="loading">
             <img src="https://static.wixstatic.com/media/68315b_30dbad1140034a3da3c59278654e1655~mv2.gif" class="h-full" />
@@ -409,21 +408,19 @@
 
 
         <div v-else class="overflow-x-auto">
-            <h3 class="text-xl font-bold">Kalendar</h3>
-            <button @click="edit=true" class="border bg-red-500 text-white hover:bg-red-300 p-2" v-if="!edit">
-                Edit mode
-            </button>
 
-            <button @click="edit=false" class="border bg-red-500 text-white hover:bg-red-300 p-2" v-else>
-                Izađi iz edit mode
-            </button>
+            <div class=" my-4">
+                <RouterLink to="/pocetna" class="w-full bg-red-400 text-white hover:bg-red-300 p-2 font-semibold rounded"> Početna</RouterLink>
+            </div>
 
-            <div class="grid grid-cols-7 gap-2 min-w-max grid-red-7">
+            <h3 class="text-3xl font-bold my-4">Kalendar</h3>
+
+            <div class="grid grid-cols-7 gap-2 min-w-max grid-red-7 my-4">
                 <div v-for="(datum, index) in tjedni" class="text-center border border-red-700">           
-                    <div class="font-bold py-2 border-b sticky top-0 bg-white">
+                    <div class="font-bold py-2 border-b sticky top-0 bg-red-800 text-gray-100">
                         {{ datum.dan_u_tjednu }}
                     </div>
-                    <div class="text-sm font-medium">
+                    <div class="text-sm font-medium bg-white">
                         {{ datum.dan_u_mjesecu }}.{{ datum.mjesec }}.
                     </div>
                     <div v-if="getTreningZaDatum(datum.id).split_dan_id !== null" 
@@ -431,19 +428,19 @@
                         {{ getTreningZaDatum(datum.id).naziv }}
 
                         <div v-if="edit">
-                            <button class="border bg-gray-500 text-white hover:bg-gray-300 p-2" @click="postaviOdmor(datum.id)">
+                            <button class="border bg-gray-500 text-white hover:bg-gray-300 p-2 rounded" @click="postaviOdmor(datum.id)">
                                 Odmor
                             </button>
                         </div>
 
                         <div v-if="edit">
-                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2" @click="preskoci(datum.id)">
+                            <button class="border bg-red-600 text-white hover:bg-red-300 p-2 rounded" @click="preskoci(datum.id)">
                                 Preskoči
                             </button>
                         </div>
 
                         <div v-else @click="idiNaDan(getTreningZaDatum(datum.id).split_dan_id)">
-                            <button class="border bg-red-500 text-white hover:bg-red-300 p-2">
+                            <button class="border bg-red-800 text-white hover:bg-red-500 p-2 rounded">
                                 Idi na dan
                             </button>    
                         </div>
@@ -455,7 +452,7 @@
                     <div v-else class="mt-1 text-xs text-gray-500">
                         Odmor
                         <div>
-                            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2" @click="otkaziOdmor(datum.id)" v-if="edit">
+                            <button class="border bg-blue-500 text-white hover:bg-blue-300 p-2 rounded" @click="otkaziOdmor(datum.id)" v-if="edit">
                                 Otkaži odmor
                             </button> 
                         </div>
@@ -463,7 +460,17 @@
                     </div>
                 </div>
             </div>
-        </div> 
 
+            <button @click="edit=true" class="border bg-red-500 text-white hover:bg-red-300 p-2 rounded" v-if="!edit">
+                Edit mode
+            </button>
+
+            <button @click="edit=false" class="border bg-red-500 text-white hover:bg-red-300 p-2 rounded" v-else>
+                Izađi iz edit mode
+            </button>
+
+
+        </div> 
     </div>
+
 </template>

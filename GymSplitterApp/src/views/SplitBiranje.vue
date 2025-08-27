@@ -134,7 +134,7 @@
 
 <template>
 
-    <div >
+    <div class="m-4">
         <RouterLink to="/UserSplitovi" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold">Nazad</RouterLink>
     </div>
 
