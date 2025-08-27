@@ -18,12 +18,12 @@
     const userStore=useUserStore()
 
     const admin_login = () => {
-    if (email.value === admin_mail && password.value === admin_lozinka) {
-        localStorage.setItem('admin', 'true')
-        router.push('/admin')
-    } else {
-        error.value = 'Neispravan email ili lozinka'
-    }
+        if (email.value === admin_mail && password.value === admin_lozinka) {
+            localStorage.setItem('admin', 'true')
+            router.push('/admin')
+        } else {
+            error.value = 'Neispravan email ili lozinka'
+        }
     }
 
 </script>

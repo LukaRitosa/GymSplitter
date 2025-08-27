@@ -33,12 +33,12 @@ const router = createRouter({
        path: '/pocetna',
        name: 'Pocetna',
        component: Pocetna,
-     },
-     {
+    },
+    {
        path: '/test',
        name: 'Test',
        component: Test
-     },
+    },
     {
       path: '/adminPrijava',
       name: 'adminPrijava',
@@ -49,13 +49,13 @@ const router = createRouter({
       name: 'Admin',
       component: Admin,
       beforeEnter: (to, from, next) => {
-      const isAdmin = localStorage.getItem('admin') === 'true'
+        const isAdmin = localStorage.getItem('admin') === 'true'
 
-      if (isAdmin) {
-        next() 
-      } else {
-        next('/adminPrijava')
-      }
+        if (isAdmin) {
+          next() 
+        } else {
+          next('/adminPrijava')
+        }
       }
     },
     {
@@ -65,11 +65,11 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
       const isAdmin = localStorage.getItem('admin') === 'true'
 
-      if (isAdmin) {
-        next() 
-      } else {
-        next('/adminPrijava')
-      }
+        if (isAdmin) {
+          next() 
+        } else {
+          next('/adminPrijava')
+        }
       }
     },
     {
@@ -79,28 +79,28 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
       const isAdmin = localStorage.getItem('admin') === 'true'
 
-      if (isAdmin) {
-        next() 
-      } else {
-        next('/adminPrijava')
-      }
+        if (isAdmin) {
+          next() 
+        } else {
+          next('/adminPrijava')
+        }
       }
     },
     {
        path: '/SplitBiranje',
        name: 'SplitBiranje',
        component: SplitBiranje,
-     },
+    },
     {
        path: '/Split',
        name: 'Split',
        component: Split,
-     },
+    },
     {
        path: '/UserSplitovi',
        name: 'UserSplitovi',
        component: UserSplitovi,
-     },
+    },
     {
       path: '/UrediDan/:danId',
       name: 'UrediDan',
@@ -111,7 +111,7 @@ const router = createRouter({
        path: '/UserVjezbaMaker',
        name: 'UserVjezbaMaker',
        component: UserVjezbaMaker,
-     },
+    },
     {
       path: '/kalendar',
       name: 'kalendar',
