@@ -321,10 +321,10 @@
                                 {{ v.opis }}
                             </p>    
                             <p>
-                                Glavni mišić: {{ v.glavni_misic }}
+                                <b> Glavni mišić: </b> {{ v.glavni_misic }}
                             </p>
                             <p v-if="v.ostali_misici.length">
-                                Ostali mišići: {{ v.ostali_misici.join(', ') }}
+                                <b>Ostali mišići: </b> {{ v.ostali_misici.join(', ') }}
                             </p>
                         </div>
 
