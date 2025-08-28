@@ -7,6 +7,7 @@
     const broj_dana=ref(0)
     const vjezbe=ref([])
     const dani=ref([])
+    const opis=ref('')
 
     const poruka = ref('')
     const loading = ref(false)
@@ -35,7 +36,7 @@
 
 
     const updateDani = () => {
-    dani.value = Array.from({ length: broj_dana.value }, (_, i) => ({
+        dani.value = Array.from({ length: broj_dana.value }, (_, i) => ({
             dan: i + 1,
             naziv: '',
             vjezbe: [],
@@ -63,22 +64,24 @@
             }
 
             const noviSplit = {
-            naziv: naziv.value,
-            broj_dana: broj_dana.value,
-            dani: dani.value.map(dan => ({
-                ...dan,
-                setovi: dan.vjezbe.reduce((acc, vjezbaId) => {
-                acc[vjezbaId] = 1
-                return acc
-                }, {})
-            })),
-            kalendar: kalendar
+                naziv: naziv.value,
+                broj_dana: broj_dana.value,
+                opis: opis.value,
+                dani: dani.value.map(dan => ({
+                    ...dan,
+                    setovi: dan.vjezbe.reduce((acc, vjezbaId) => {
+                        acc[vjezbaId] = 1
+                        return acc
+                    }, {})
+                })),
+                kalendar: kalendar
             }
 
             await addDoc(collection(db, 'splits'), noviSplit)
 
             poruka.value = 'Split uspješno dodan'
             naziv.value = ''
+            opis.value=''
             broj_dana.value = 0
             updateDani()
         } catch (error) {
@@ -90,7 +93,7 @@
         }
     
     }
-
+ 
 
 
 </script>
@@ -109,6 +112,11 @@
             <div class="mb-3">
                 <label class="block font-semibold">Naziv splita:</label>
                 <input v-model="naziv" class="border p-1 w-full" type="text" />
+            </div>
+
+            <div class="mb-3">
+                <label class="block font-semibold">Opis:</label>
+                <input v-model="opis" class="border p-1 w-full" type="text" />
             </div>
 
             <div class="mb-3">

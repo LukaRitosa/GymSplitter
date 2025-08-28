@@ -151,6 +151,7 @@
                 <div v-for="split in preporuceniSplitovi" class="text-center flex flex-col items-center border rounded p-4 mb-4 shadow bg-red-50">
                     <h3 class="text-xl font-semibold">{{ split.naziv }}</h3>
                     <p>Broj dana: {{ split.broj_dana }}</p>
+                    <p>Opis: {{ split.opis }}</p>
                     
                     <ul class="mt-2 list-disc pl-5 text-sm text-gray-700">
                         <li v-for="dan in split.dani" :key="dan.dan">
@@ -177,6 +178,7 @@
                 <div v-for="split in ostaliSplitovi" class="border rounded p-4 mb-4 shadow text-center flex flex-col items-center">
                     <h3 class="text-xl font-semibold">{{ split.naziv }}</h3>
                     <p>Broj dana: {{ split.broj_dana }}</p>
+                    <p>Opis: {{ split.opis }}</p>
 
                     <ul class="mt-2 list-disc pl-5 text-sm text-gray-700">
                         <li v-for="dan in split.dani" :key="dan.dan">

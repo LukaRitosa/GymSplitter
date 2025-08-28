@@ -60,6 +60,9 @@
 
         <p class="text-sm text-gray-600 mb-4">Broj dana: {{ splitPodaci.broj_dana }}</p>
 
+        <p class="text-sm text-gray-600 mb-4">Opis: {{ splitPodaci.opis }}</p>
+        
+
         <div class="grid grid-cols-1 gap-4 my-4">
             <div v-for="dan in splitPodaci.dani" :key="dan.dan" class="p-6 rounded-lg border border-gray-300 shadow-md bg-red-900 text-white cursor-pointer hover:bg-red-700 transition"
             :class="{'ring-4 ring-red-300': splitPodaci.kalendar[danas].split_dan_id === dan.dan}" @click="router.push(`/UrediDan/${dan.dan}`)">
