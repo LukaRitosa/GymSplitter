@@ -4,9 +4,9 @@ Luka Ritoša
 
 Fakultet informatike u Puli (https://fipu.unipu.hr/)
 
-Kolegij: Programsko inženjerstvo (ntankovic.unipu.hr/pi)
+Kolegij: Programsko inženjerstvo (https://fiputreca.notion.site/Programsko-in-enjerstvo-e353945331df468e8382cdad1e91c4b8)
 
-Mentor: doc. dr. sc. Nikola Tanković (ntankovic.unipu.hr)
+Mentor: doc. dr. sc. Nikola Tanković (https://fiputreca.notion.site/Kontakt-stranica-875574d1b92248b1a8e90dae52cd29a9)
 
 Funkcionalnosti: Aplikacija za organizaciju splita (trening programa) sa biranjem i mjenjanjem splitova, uređivanje dana u splitu i pregled personaliziranog kalendara.
 
