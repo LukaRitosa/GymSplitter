@@ -1,7 +1,7 @@
 <script setup>
     import { RouterLink, useRouter } from 'vue-router'
     import { ref, onMounted } from 'vue'
-    import { doc, getDoc } from 'firebase/firestore'
+    import { doc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore'
     import { db } from '@/firebase'
     import { useUserStore } from '@/stores/userStore'
 
@@ -9,7 +9,7 @@
     const trenutniSplit = ref(null)
     const splitPodaci = ref(null)
     const router=useRouter()
-    const loadnig=ref(false)
+    const loading=ref(false) 
 
     const danas = ref(new Date().toLocaleDateString("sv-SE"))
 
@@ -22,7 +22,10 @@
         if (userDocSnap.exists()) {
             const data = userDocSnap.data()
             trenutniSplit.value = data.trenutniSplit
-            console.log("trenutniSplit:", trenutniSplit.value)
+            if(trenutniSplit.value===''){
+                router.push('/UserSplitovi')
+            }
+
         } else {
             console.warn("User dokument ne postoji.")
         }
@@ -40,6 +43,35 @@
         }
     }
 
+    const obrisiSplit = async () => {
+        if (!userStore.currentUser || !trenutniSplit.value) return
+        
+        const potvrda = confirm("Jeste li sigurni da želite obrisati ovaj split? Ova radnja je nepovratna.")
+        if (!potvrda) return
+
+        loading.value = true
+        try {
+            const splitRef = doc(db, `users/${userStore.currentUser.uid}/splits/${trenutniSplit.value}`)
+            await deleteDoc(splitRef)
+
+            const userDocRef = doc(db, `users/${userStore.currentUser.uid}`)
+            await updateDoc(userDocRef, {
+                trenutniSplit: ''
+            })
+
+            trenutniSplit.value = null
+
+            router.push('/UserSplitovi')
+            
+            alert("Split je uspješno obrisan!")
+        } catch (error) {
+            console.error("Greška pri brisanju splita:", error)
+            alert("Došlo je do greške pri brisanju splita.")
+        } finally {
+            loading.value = false
+        }
+    }
+
     onMounted(async () => {
         await dohvatiTrenutniSplit()
         await dohvatiSplit()
@@ -54,7 +86,12 @@
             <RouterLink to="/UserSplitovi" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold"> Splitovi</RouterLink>
         </div>
 
-        
+        <div>
+            <button @click="obrisiSplit()" class="w-full bg-black text-white rounded hover:bg-red-400 p-2 font-semibold">
+                Obriši split
+            </button>
+        </div>
+
 
         <h2 class="text-3xl font-bold text-gray-800 mb-2">{{ splitPodaci.naziv }}</h2>
 
