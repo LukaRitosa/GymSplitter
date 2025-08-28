@@ -8,7 +8,7 @@ Kolegij: Programsko inženjerstvo (https://fiputreca.notion.site/Programsko-in-e
 
 Mentor: doc. dr. sc. Nikola Tanković (https://fiputreca.notion.site/Kontakt-stranica-875574d1b92248b1a8e90dae52cd29a9)
 
-Funkcionalnosti: Aplikacija za organizaciju splita (trening programa) sa biranjem i mjenjanjem splitova, uređivanje dana u splitu i pregled personaliziranog kalendara.
+Funkcionalnosti: Aplikacija za organizaciju splita (trening programa) sa biranjem i mjenjanjem splitova, uređivanje dana u splitu i pregled i uređivanje personaliziranog kalendara.
 
 Figma prototip: https://www.figma.com/proto/ogPJDA2u13Ic37M6czVBAp/GymSplitter?node-id=0-1&t=qIW4bDd2cKHhCWD0-1
 
