@@ -76,8 +76,8 @@
                 </div>
                 <div>
                     <label class="block">Glavni mišić:</label>
-                    <select v-model="misic" class="border p-1 w-full">
-                        <option v-for="m in svi_misici">
+                    <select v-model="misic" class="border p-1 w-full text-white">
+                        <option v-for="m in svi_misici" class="text-red-900">
                             {{ m }}
                         </option>
 
