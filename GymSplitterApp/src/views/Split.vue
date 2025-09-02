@@ -22,9 +22,6 @@
         if (userDocSnap.exists()) {
             const data = userDocSnap.data()
             trenutniSplit.value = data.trenutniSplit
-            if(trenutniSplit.value===''){
-                router.push('/UserSplitovi')
-            }
 
         } else {
             console.warn("User dokument ne postoji.")

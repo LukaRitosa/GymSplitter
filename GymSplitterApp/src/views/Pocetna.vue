@@ -82,8 +82,12 @@
             <RouterLink to="/test" class="w-full bg-gray-800 text-white rounded hover:bg-gray-600 p-2 font-semibold">Promjeni podatke</RouterLink>
         </div>
 
-        <div >
+        <div v-if="userPodaci && userPodaci.trenutniSplit">
             <RouterLink to="/Split" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold"> Split</RouterLink>
+        </div>
+
+        <div v-else>
+            <RouterLink to="/SplitBiranje" class="w-full bg-red-800 text-white rounded hover:bg-red-600 p-2 font-semibold"> Split biranje</RouterLink>
         </div>
 
         <div >
