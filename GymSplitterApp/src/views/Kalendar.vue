@@ -311,6 +311,7 @@
             const split_broj_dana=split.broj_dana
 
 
+
             const danas=formatDateKey(new Date)
             let brojac=0
             
@@ -350,7 +351,8 @@
                     const danUTjednu = datum.toLocaleDateString("hr-HR", { weekday: "long" })
 
                     zadnji_split_dan=(zadnji_split_dan + 1)  % split_broj_dana
-
+                    
+                    
                     if(slobodni_dani[danUTjednu]){
                         kalendar[datumISO]={
                             split_dan_id: split_dani[zadnji_split_dan].dan,
@@ -373,9 +375,16 @@
                     const datumISO = zadnji_datum.toLocaleDateString("sv-SE") 
                     const danUTjednu = zadnji_datum.toLocaleDateString("hr-HR", { weekday: "long" })
                     
+                    
+                    
+                    console.log('split id',zadnji_split_dan)
                     if(i!==1){
                         zadnji_split_dan=(zadnji_split_dan + 1) % split_broj_dana
                     }
+                    if(i===1 && zadnji_split_dan===split_broj_dana){
+                        zadnji_split_dan=0
+                    }
+                    console.log('split id',zadnji_split_dan)
 
                     if(slobodni_dani.includes(danUTjednu)){
                         kalendar[datumISO]={
