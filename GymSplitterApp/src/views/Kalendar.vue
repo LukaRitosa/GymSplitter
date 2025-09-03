@@ -248,8 +248,23 @@
 
             for(let i= startPoz; i< radniDani.length; i++){
                 const trenutniDan=radniDani[i]
-                const noviId=originalniId[i+1] || originalniId[i]
-                const noviNaziv=Object.values(original).find(d=>d.split_dan_id ===noviId)?.naziv || String(noviId)
+                let noviId, noviNaziv
+
+                if(i+1<originalniId.length){
+                    noviId=originalniId[i+1] 
+                    noviNaziv=Object.values(original).find(d=>d.split_dan_id ===noviId)?.naziv || String(noviId)
+                }
+                else {
+                    const zadnjiId = originalniId[i]
+
+                    const zadnjiIndex = userData.dani.findIndex(d => d.dan === zadnjiId)
+
+                    const sljedeciIndex = (zadnjiIndex + 1) % userData.broj_dana
+
+                    noviId = userData.dani[sljedeciIndex].dan
+                    noviNaziv = userData.dani[sljedeciIndex].naziv
+                }
+
 
                 kalendar[trenutniDan]={
                     ...kalendar[trenutniDan],
