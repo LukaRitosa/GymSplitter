@@ -346,7 +346,7 @@
             if(brojac===14){
                 for(let i=0; i<14; i++){
                     const datum = new Date(danas)
-                    datum.setDate(danas.getDate() + i)
+                    datum.setDate(danas.getDate() + 1)
                     const datumISO = datum.toLocaleDateString("sv-SE") 
                     const danUTjednu = datum.toLocaleDateString("hr-HR", { weekday: "long" })
 
