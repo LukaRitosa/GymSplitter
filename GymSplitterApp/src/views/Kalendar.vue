@@ -371,20 +371,18 @@
             else{
                 for(let i=1; i<=brojac; i++){
                     zadnji_datum=new Date(zadnji_datum)
-                    zadnji_datum.setDate(zadnji_datum.getDate()+i)
+                    zadnji_datum.setDate(zadnji_datum.getDate()+1)
                     const datumISO = zadnji_datum.toLocaleDateString("sv-SE") 
                     const danUTjednu = zadnji_datum.toLocaleDateString("hr-HR", { weekday: "long" })
                     
                     
                     
-                    console.log('split id',zadnji_split_dan)
                     if(i!==1){
                         zadnji_split_dan=(zadnji_split_dan + 1) % split_broj_dana
                     }
                     if(i===1 && zadnji_split_dan===split_broj_dana){
                         zadnji_split_dan=0
                     }
-                    console.log('split id',zadnji_split_dan)
 
                     if(slobodni_dani.includes(danUTjednu)){
                         kalendar[datumISO]={
