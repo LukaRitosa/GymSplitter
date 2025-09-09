@@ -44,7 +44,6 @@
         const brojSlobodnihDana = userData.value.slobodni_dani.length
 
         return splits.value.filter(split => {
-            if (split.broj_dana === brojSlobodnihDana) return true
 
             if (split.broj_dana == brojSlobodnihDana) {
                 return true

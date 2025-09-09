@@ -13,7 +13,6 @@ import UserSplitovi from '../views/UserSplitovi.vue'
 import UrediDan from '@/views/UrediDan.vue'
 import UserVjezbaMaker from '@/views/UserVjezbaMaker.vue'
 import Kalendar from '@/views/Kalendar.vue'
-// import ChangePasswordView from '../views/ChangePasswordView.vue' 
 
 
 const router = createRouter({

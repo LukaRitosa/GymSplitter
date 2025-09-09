@@ -2,7 +2,7 @@
     import { RouterLink, useRouter } from 'vue-router'
     import { useUserStore } from '@/stores/userStore'
     import { onMounted, ref } from 'vue'
-    import { signOut, deleteUser } from 'firebase/auth';
+    import { signOut } from 'firebase/auth';
     import { auth, db } from '@/firebase.js'
     import { doc, getDoc } from 'firebase/firestore'
 

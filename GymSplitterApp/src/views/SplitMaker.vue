@@ -53,14 +53,14 @@
             const kalendar = {}
 
             for (let i = 0; i < 14; i++) {
-            const dummyDate = new Date(2004, 7, 6 + i) 
-                .toISOString()
-                .split('T')[0]
+                const dummyDate = new Date(2004, 7, 6 + i) 
+                    .toISOString()
+                    .split('T')[0]
 
-            kalendar[dummyDate] = {
-                split_dan_id: null,
-                naziv: "Odmor"
-            }
+                kalendar[dummyDate] = {
+                    split_dan_id: null,
+                    naziv: "Odmor"
+                }
             }
 
             const noviSplit = {

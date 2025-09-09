@@ -1,9 +1,7 @@
 <script setup>
     import { RouterLink, useRouter } from 'vue-router'
-    import { useUserStore } from '@/stores/userStore'
     import { ref } from 'vue'
-    import { signInWithEmailAndPassword } from 'firebase/auth'
-    import { auth } from '@/firebase.js'
+
 
     const email = ref('')
     const password = ref('')
@@ -15,7 +13,6 @@
     const admin_lozinka='lozinka123'
 
     const router=useRouter()
-    const userStore=useUserStore()
 
     const admin_login = () => {
         if (email.value === admin_mail && password.value === admin_lozinka) {

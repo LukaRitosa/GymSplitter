@@ -102,7 +102,8 @@
             const sve=[]
 
             const globalSnap= await getDocs(collection(db, 'vjezbe'))
-                globalSnap.forEach(docSnap => {
+            
+            globalSnap.forEach(docSnap => {
                 sve.push({
                     id: docSnap.id,
                     ...docSnap.data()
@@ -110,7 +111,8 @@
             })
             
             const customSnap= await getDocs(collection(db, `users/${userStore.currentUser.uid}/customVjezbe`))
-                customSnap.forEach(docSnap => {
+                
+            customSnap.forEach(docSnap => {
                 sve.push({
                     id: docSnap.id,
                     ...docSnap.data(),
